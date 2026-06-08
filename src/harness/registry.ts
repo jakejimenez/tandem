@@ -10,6 +10,7 @@ import { execSync } from 'child_process';
 import type { HarnessInfo, HarnessType } from './adapter.js';
 import { CLAUDE_CODE_CAPABILITIES } from './claudecode/index.js';
 import { CODEX_CAPABILITIES } from './codex/index.js';
+import { PI_CAPABILITIES } from './pi/index.js';
 import { getClaudeCliVersion } from '../claude/version-check.js';
 
 /**
@@ -45,10 +46,41 @@ function getCodexVersion(): string | null {
 }
 
 /**
+ * Try to get the Pi version by running `pi --version`.
+ */
+function getPiVersion(): string | null {
+  try {
+    const output = execSync('pi --version', {
+      encoding: 'utf8',
+      timeout: 5000,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim();
+
+    // Try to extract version from output (e.g., "0.74.2" or "Pi 0.74.2")
+    const patterns = [
+      /^([\d]+\.[\d]+\.[\d]+)/,           // Version at start
+      /version\s+([\d]+\.[\d]+\.[\d]+)/i, // "version X.Y.Z"
+      /v?([\d]+\.[\d]+\.[\d]+)/,          // Any X.Y.Z pattern
+    ];
+
+    for (const pattern of patterns) {
+      const match = output.match(pattern);
+      if (match) {
+        return match[1];
+      }
+    }
+
+    // Pi found but couldn't parse version
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Detect all available harnesses on this machine.
  *
- * Detects Claude Code and Codex. Other harnesses (OpenCode, Pi)
- * will be added as adapters are introduced in later tasks.
+ * Detects Claude Code, Codex, and Pi.
  */
 export async function detectHarnesses(): Promise<HarnessInfo[]> {
   const harnesses: HarnessInfo[] = [];
@@ -74,6 +106,17 @@ export async function detectHarnesses(): Promise<HarnessInfo[]> {
     available: codexVersion !== null,
   };
   harnesses.push(codexInfo);
+
+  // Detect Pi
+  const piVersion = getPiVersion();
+  const piInfo: HarnessInfo = {
+    type: 'pi',
+    displayName: 'Pi',
+    capabilities: PI_CAPABILITIES,
+    version: piVersion,
+    available: piVersion !== null,
+  };
+  harnesses.push(piInfo);
 
   return harnesses;
 }
