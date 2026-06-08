@@ -6,9 +6,9 @@
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "claude-threads": "./dist/index.js",
-    "claude-threads-mcp": "./dist/mcp/mcp-server.js",
-    "claude-threads-daemon": "./bin/claude-threads-daemon"
+    "tandem": "./dist/index.js",
+    "tandem-mcp": "./dist/mcp/mcp-server.js",
+    "tandem-daemon": "./bin/tandem-daemon"
   },
   "scripts": {
     "dev": "bun --watch src/index.ts",
@@ -48,12 +48,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anneschuth/claude-threads.git"
+    "url": "git+https://github.com/jakejimenez/tandem.git"
   },
   "bugs": {
-    "url": "https://github.com/anneschuth/claude-threads/issues"
+    "url": "https://github.com/jakejimenez/tandem/issues"
   },
-  "homepage": "https://github.com/anneschuth/claude-threads#readme",
+  "homepage": "https://github.com/jakejimenez/tandem#readme",
   "files": [
     "dist",
     "bin",

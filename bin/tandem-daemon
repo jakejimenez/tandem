@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# claude-threads-daemon - Auto-restart wrapper for claude-threads
+# tandem-daemon - Auto-restart wrapper for tandem
 #
-# This script runs claude-threads and automatically restarts it when
+# This script runs tandem and automatically restarts it when
 # it exits with code 42 (the special "update restart" signal).
 #
 # For other exit codes:
@@ -13,17 +13,17 @@
 #   - Linux: Full support
 #   - macOS: Full support
 #   - Windows: Requires Git Bash, WSL, or similar bash environment
-#              Without bash, use claude-threads directly (no auto-restart)
+#              Without bash, use tandem directly (no auto-restart)
 #
 # Usage:
-#   claude-threads-daemon [options]
-#   claude-threads-daemon --restart-on-error  # Also restart on errors
-#   claude-threads-daemon --max-restarts 10   # Limit restart count
+#   tandem-daemon [options]
+#   tandem-daemon --restart-on-error  # Also restart on errors
+#   tandem-daemon --max-restarts 10   # Limit restart count
 #
 # Environment variables:
-#   CLAUDE_THREADS_MAX_RESTARTS - Maximum restart attempts (default: unlimited)
-#   CLAUDE_THREADS_RESTART_DELAY - Delay between restarts in seconds (default: 2)
-#   CLAUDE_THREADS_INTERACTIVE - Set by index.ts when spawning the daemon to
+#   TANDEM_MAX_RESTARTS - Maximum restart attempts (default: unlimited)
+#   TANDEM_RESTART_DELAY - Delay between restarts in seconds (default: 2)
+#   TANDEM_INTERACTIVE - Set by index.ts when spawning the daemon to
 #                                indicate the parent had an interactive terminal.
 #                                Passed through to the child process.
 #
@@ -34,26 +34,26 @@ set -e
 RESTART_EXIT_CODE=42
 
 # Configuration
-MAX_RESTARTS=${CLAUDE_THREADS_MAX_RESTARTS:-0}  # 0 = unlimited
-RESTART_DELAY=${CLAUDE_THREADS_RESTART_DELAY:-2}
+MAX_RESTARTS=${TANDEM_MAX_RESTARTS:-0}  # 0 = unlimited
+RESTART_DELAY=${TANDEM_RESTART_DELAY:-2}
 RESTART_ON_ERROR=false
 VERBOSE=false
 
-# Path to claude-threads binary (set by index.ts when spawning daemon)
-# Falls back to global 'claude-threads' command if not set
-# If CLAUDE_THREADS_BIN is a .js file, run it with node (matches the shebang)
-if [ -n "$CLAUDE_THREADS_BIN" ]; then
-    if [[ "$CLAUDE_THREADS_BIN" == *.js ]]; then
+# Path to tandem binary (set by index.ts when spawning daemon)
+# Falls back to global 'tandem' command if not set
+# If TANDEM_BIN is a .js file, run it with node (matches the shebang)
+if [ -n "$TANDEM_BIN" ]; then
+    if [[ "$TANDEM_BIN" == *.js ]]; then
         if ! command -v node &> /dev/null; then
             echo "[daemon] Error: node not found in PATH" >&2
             exit 1
         fi
-        CLAUDE_THREADS_CMD="node $CLAUDE_THREADS_BIN"
+        TANDEM_CMD="node $TANDEM_BIN"
     else
-        CLAUDE_THREADS_CMD="$CLAUDE_THREADS_BIN"
+        TANDEM_CMD="$TANDEM_BIN"
     fi
 else
-    CLAUDE_THREADS_CMD="claude-threads"
+    TANDEM_CMD="tandem"
 fi
 
 # Track restart count
@@ -79,9 +79,9 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --help|-h)
-            echo "claude-threads-daemon - Auto-restart wrapper for claude-threads"
+            echo "tandem-daemon - Auto-restart wrapper for tandem"
             echo ""
-            echo "Usage: claude-threads-daemon [options]"
+            echo "Usage: tandem-daemon [options]"
             echo ""
             echo "Options:"
             echo "  --restart-on-error    Also restart on non-zero exit codes"
@@ -97,7 +97,7 @@ while [[ $# -gt 0 ]]; do
             exit 0
             ;;
         *)
-            # Pass through to claude-threads
+            # Pass through to tandem
             break
             ;;
     esac
@@ -109,8 +109,8 @@ log() {
     fi
 }
 
-log "Starting claude-threads daemon"
-log "Binary: $CLAUDE_THREADS_CMD"
+log "Starting tandem daemon"
+log "Binary: $TANDEM_CMD"
 log "Max restarts: ${MAX_RESTARTS:-unlimited}"
 log "Restart delay: ${RESTART_DELAY}s"
 log "Restart on error: $RESTART_ON_ERROR"
@@ -132,12 +132,12 @@ trap 'cleanup INT' SIGINT
 trap 'cleanup HUP' SIGHUP
 
 while true; do
-    log "Starting claude-threads (restart #$restart_count)..."
+    log "Starting tandem (restart #$restart_count)..."
 
-    # Run claude-threads with any remaining arguments
-    # Note: CLAUDE_THREADS_CMD may be "bun /path/to/file.js" so we use eval
+    # Run tandem with any remaining arguments
+    # Note: TANDEM_CMD may be "bun /path/to/file.js" so we use eval
     set +e
-    eval $CLAUDE_THREADS_CMD '"$@"' &
+    eval $TANDEM_CMD '"$@"' &
     child_pid=$!
     wait $child_pid
     exit_code=$?
@@ -149,7 +149,7 @@ while true; do
         exit 0
     fi
 
-    log "claude-threads exited with code $exit_code"
+    log "tandem exited with code $exit_code"
 
     # Check if we should restart
     should_restart=false
