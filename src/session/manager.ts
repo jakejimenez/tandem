@@ -38,6 +38,9 @@ import { SessionRegistry } from './registry.js';
 import * as reactionRouter from './reaction-router.js';
 import { post } from '../operations/post-helpers/index.js';
 import { createLogger } from '../utils/logger.js';
+import { detectHarnesses } from '../harness/registry.js';
+import { setUserHarnessPreference } from '../harness/prefs.js';
+import type { HarnessType } from '../harness/adapter.js';
 
 const log = createLogger('manager');
 
@@ -1661,6 +1664,107 @@ export class SessionManager extends EventEmitter {
         log.warn(`Failed to post ask message to ${threadId}: ${err}`);
       }
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Harness management
+  // ---------------------------------------------------------------------------
+
+  /**
+   * List all detected harnesses with their versions and availability.
+   * Posts the result to the given thread.
+   */
+  async listHarnesses(threadId: string): Promise<void> {
+    const session = this.findSessionByThreadId(threadId);
+    if (!session) return;
+
+    const harnesses = await detectHarnesses();
+    const fmt = session.platform.getFormatter();
+    const lines: string[] = [`${fmt.formatBold('Available harnesses:')}\n`];
+
+    for (const h of harnesses) {
+      const statusIcon = h.available ? '✅' : '❌';
+      const versionStr = h.version ? ` v${h.version}` : ' (version unknown)';
+      const current = session.harnessType === h.type ? ' ← current' : '';
+      lines.push(`${statusIcon} ${fmt.formatBold(h.displayName)}${versionStr}${current}`);
+    }
+
+    lines.push(`\nUse ${fmt.formatCode('!harness <type>')} to switch (starts a new session).`);
+    lines.push(`Use ${fmt.formatCode('!harness use <type>')} to set your default for future sessions.`);
+
+    await post(session, 'info', lines.join('\n'));
+  }
+
+  /**
+   * Switch to a different harness by cancelling the current session and
+   * starting a fresh one with the specified harness type.
+   */
+  async switchHarness(
+    threadId: string,
+    harnessType: HarnessType,
+    username: string,
+    displayName?: string,
+  ): Promise<void> {
+    const session = this.findSessionByThreadId(threadId);
+    if (!session) return;
+
+    const fmt = session.platform.getFormatter();
+    const harnessNames: Record<HarnessType, string> = {
+      'claude-code': 'Claude Code',
+      codex: 'Codex',
+      pi: 'Pi',
+      opencode: 'OpenCode',
+    };
+    const displayHarnessName = harnessNames[harnessType] ?? harnessType;
+
+    await post(
+      session,
+      'info',
+      `🔄 Switching to ${fmt.formatBold(displayHarnessName)}. Starting a new session — your current conversation context will not carry over.`,
+    );
+
+    // Stop the current session (cancel it cleanly)
+    await this.cancelSession(threadId, username);
+
+    // Start a new session in the same thread with the requested harness
+    await this.startSession(
+      { prompt: `(Session started with ${displayHarnessName} harness)`, skipWorktreePrompt: true },
+      username,
+      session.threadId,
+      session.platformId,
+      displayName,
+      undefined,
+      { harnessType },
+    );
+  }
+
+  /**
+   * Set the caller's default harness preference for future sessions.
+   * Persisted in-memory only (a future task will add disk persistence).
+   */
+  async setUserHarnessDefault(
+    threadId: string,
+    harnessType: HarnessType,
+    username: string,
+  ): Promise<void> {
+    const session = this.findSessionByThreadId(threadId);
+    if (!session) return;
+
+    setUserHarnessPreference(session.platformId, username, harnessType);
+
+    const fmt = session.platform.getFormatter();
+    const harnessNames: Record<HarnessType, string> = {
+      'claude-code': 'Claude Code',
+      codex: 'Codex',
+      pi: 'Pi',
+      opencode: 'OpenCode',
+    };
+    const displayHarnessName = harnessNames[harnessType] ?? harnessType;
+    await post(
+      session,
+      'info',
+      `✅ Your default harness is now ${fmt.formatBold(displayHarnessName)}. New sessions you start will use this harness.`,
+    );
   }
 
   // Shutdown

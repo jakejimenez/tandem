@@ -7,12 +7,14 @@
  */
 
 import { execSync } from 'child_process';
-import type { HarnessInfo, HarnessType } from './adapter.js';
+import type { HarnessInfo, HarnessType, HarnessProcess } from './adapter.js';
 import { CLAUDE_CODE_CAPABILITIES } from './claudecode/index.js';
-import { CODEX_CAPABILITIES } from './codex/index.js';
-import { PI_CAPABILITIES } from './pi/index.js';
-import { OPENCODE_CAPABILITIES } from './opencode/index.js';
+import { ClaudeCli } from './claudecode/index.js';
+import { CodexCli, CODEX_CAPABILITIES } from './codex/index.js';
+import { PiCli, PI_CAPABILITIES } from './pi/index.js';
+import { OpenCodeCli, OPENCODE_CAPABILITIES } from './opencode/index.js';
 import { getClaudeCliVersion } from '../claude/version-check.js';
+import type { ClaudeCliOptions } from '../claude/cli.js';
 
 /**
  * Try to get the Codex version by running `codex --version`.
@@ -168,4 +170,77 @@ export async function detectHarnesses(): Promise<HarnessInfo[]> {
  */
 export async function getDefaultHarness(): Promise<HarnessType> {
   return 'claude-code';
+}
+
+// =============================================================================
+// Harness factory
+// =============================================================================
+
+/**
+ * Options passed to createHarness(). These cover the common fields needed by
+ * all adapters. The Claude Code path receives the full ClaudeCliOptions so the
+ * existing session path is completely unchanged.
+ */
+export interface HarnessCreateOptions {
+  /** Full options for the Claude Code adapter (ignored by other adapters) */
+  claudeCliOptions?: ClaudeCliOptions;
+  /** Working directory for non-Claude-Code adapters */
+  workingDir?: string;
+  /** Prompt to send immediately after start() (Codex / Pi / OpenCode) */
+  prompt?: string;
+  /** Session ID for Codex resume */
+  sessionId?: string;
+  /** Codex sandbox mode */
+  sandboxMode?: 'read-only' | 'workspace-write' | 'full-access';
+}
+
+/**
+ * Factory that instantiates the correct HarnessProcess for the given type.
+ *
+ * - 'claude-code' → ClaudeCli (requires options.claudeCliOptions)
+ * - 'codex'       → CodexCli
+ * - 'pi'          → PiCli
+ * - 'opencode'    → OpenCodeCli
+ *
+ * The Claude Code path is identical to calling `new ClaudeCli(options)` directly,
+ * so existing behavior is fully preserved.
+ */
+export function createHarness(type: HarnessType, options: HarnessCreateOptions): HarnessProcess {
+  switch (type) {
+    case 'claude-code': {
+      if (!options.claudeCliOptions) {
+        throw new Error('createHarness: claudeCliOptions is required for claude-code');
+      }
+      return new ClaudeCli(options.claudeCliOptions);
+    }
+
+    case 'codex': {
+      return new CodexCli({
+        workingDir: options.workingDir ?? options.claudeCliOptions?.workingDir ?? process.cwd(),
+        sessionId: options.sessionId,
+        prompt: options.prompt,
+        sandboxMode: options.sandboxMode ?? 'workspace-write',
+      });
+    }
+
+    case 'pi': {
+      return new PiCli({
+        workingDir: options.workingDir ?? options.claudeCliOptions?.workingDir ?? process.cwd(),
+        prompt: options.prompt,
+      });
+    }
+
+    case 'opencode': {
+      return new OpenCodeCli({
+        workingDir: options.workingDir ?? options.claudeCliOptions?.workingDir ?? process.cwd(),
+        prompt: options.prompt,
+      });
+    }
+
+    default: {
+      // TypeScript exhaustiveness guard
+      const _exhaustive: never = type;
+      throw new Error(`createHarness: unknown harness type "${String(_exhaustive)}"`);
+    }
+  }
 }

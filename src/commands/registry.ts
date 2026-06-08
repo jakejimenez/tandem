@@ -280,6 +280,21 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
 
   // ---------------------------------------------------------------------------
+  // Harness Selection
+  // ---------------------------------------------------------------------------
+  {
+    command: 'harness',
+    description: 'List or switch the AI harness (Claude Code, Codex, Pi, OpenCode)',
+    args: 'list | <type> | use <type>',
+    category: 'settings',
+    audience: 'user',
+    claudeNotes: 'User decisions, not yours',
+    subcommands: [
+      { name: 'list', description: 'List all detected harnesses with versions and availability' },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
   // Claude Code Passthrough (hidden from help, used in system prompt)
   // ---------------------------------------------------------------------------
   {
