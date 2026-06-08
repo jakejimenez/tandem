@@ -11,6 +11,7 @@ import type { HarnessInfo, HarnessType } from './adapter.js';
 import { CLAUDE_CODE_CAPABILITIES } from './claudecode/index.js';
 import { CODEX_CAPABILITIES } from './codex/index.js';
 import { PI_CAPABILITIES } from './pi/index.js';
+import { OPENCODE_CAPABILITIES } from './opencode/index.js';
 import { getClaudeCliVersion } from '../claude/version-check.js';
 
 /**
@@ -39,6 +40,36 @@ function getCodexVersion(): string | null {
     }
 
     // Codex found but couldn't parse version
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Try to get the OpenCode version by running `opencode --version`.
+ */
+function getOpenCodeVersion(): string | null {
+  try {
+    const output = execSync('opencode --version', {
+      encoding: 'utf8',
+      timeout: 5000,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim();
+
+    const patterns = [
+      /^([\d]+\.[\d]+\.[\d]+)/,           // Version at start
+      /version\s+([\d]+\.[\d]+\.[\d]+)/i, // "version X.Y.Z"
+      /v?([\d]+\.[\d]+\.[\d]+)/,          // Any X.Y.Z pattern
+    ];
+
+    for (const pattern of patterns) {
+      const match = output.match(pattern);
+      if (match) {
+        return match[1];
+      }
+    }
+
     return null;
   } catch {
     return null;
@@ -117,6 +148,17 @@ export async function detectHarnesses(): Promise<HarnessInfo[]> {
     available: piVersion !== null,
   };
   harnesses.push(piInfo);
+
+  // Detect OpenCode
+  const openCodeVersion = getOpenCodeVersion();
+  const openCodeInfo: HarnessInfo = {
+    type: 'opencode',
+    displayName: 'OpenCode',
+    capabilities: OPENCODE_CAPABILITIES,
+    version: openCodeVersion,
+    available: openCodeVersion !== null,
+  };
+  harnesses.push(openCodeInfo);
 
   return harnesses;
 }
