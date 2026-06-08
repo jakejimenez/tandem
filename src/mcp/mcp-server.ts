@@ -84,14 +84,14 @@ const OUTBOUND_FILES_MAX_BYTES = parseInt(
   10,
 );
 
-const SEND_FILE_TOOL_NAME = 'mcp__claude-threads-mcp__send_file';
-const READ_POST_TOOL_NAME = 'mcp__claude-threads-mcp__read_post';
-const REACT_TO_POST_TOOL_NAME = 'mcp__claude-threads-mcp__react_to_post';
-const UPDATE_OWN_POST_TOOL_NAME = 'mcp__claude-threads-mcp__update_own_post';
-const LIST_THREAD_TOOL_NAME = 'mcp__claude-threads-mcp__list_thread';
-const READ_CHANNEL_HISTORY_TOOL_NAME = 'mcp__claude-threads-mcp__read_channel_history';
-const SEARCH_MESSAGES_TOOL_NAME = 'mcp__claude-threads-mcp__search_messages';
-const SEND_DM_TOOL_NAME = 'mcp__claude-threads-mcp__send_dm';
+const SEND_FILE_TOOL_NAME = 'mcp__tandem-mcp__send_file';
+const READ_POST_TOOL_NAME = 'mcp__tandem-mcp__read_post';
+const REACT_TO_POST_TOOL_NAME = 'mcp__tandem-mcp__react_to_post';
+const UPDATE_OWN_POST_TOOL_NAME = 'mcp__tandem-mcp__update_own_post';
+const LIST_THREAD_TOOL_NAME = 'mcp__tandem-mcp__list_thread';
+const READ_CHANNEL_HISTORY_TOOL_NAME = 'mcp__tandem-mcp__read_channel_history';
+const SEARCH_MESSAGES_TOOL_NAME = 'mcp__tandem-mcp__search_messages';
+const SEND_DM_TOOL_NAME = 'mcp__tandem-mcp__send_dm';
 
 // Tools that bypass the standard permission_prompt flow because they
 // enforce their own gate inside the handler. The "gate" varies:
@@ -1385,7 +1385,7 @@ async function promptForDmPermission(
   const recipientLabel = recipientUsername ? `@${recipientUsername}` : recipientId;
   const message =
     `⚠️ ${formatter.formatBold('Permission requested')}\n\n` +
-    `claude-threads wants to send a DM to ${formatter.formatBold(recipientLabel)}.\n\n` +
+    `Agent wants to send a DM to ${formatter.formatBold(recipientLabel)}.\n\n` +
     `👍 Allow once | ✅ Allow all DMs to this recipient | 👎 Deny`;
 
   let post: { id: string };
@@ -1466,9 +1466,9 @@ function buildAttributionPrefix(ownerUsername: string, channelLabel: string): st
   // - names the channel so the recipient knows where the session lives
   // - names the bot so they can mute / report it if needed
   if (ownerUsername) {
-    return `_(automated message via claude-threads, on behalf of @${ownerUsername} from ${channelLabel})_`;
+    return `_(automated message via tandem, on behalf of @${ownerUsername} from ${channelLabel})_`;
   }
-  return `_(automated message via claude-threads from ${channelLabel})_`;
+  return `_(automated message via tandem from ${channelLabel})_`;
 }
 
 async function handleSendDm(
@@ -1573,7 +1573,7 @@ async function resolvePostFromUrl(
 
 async function main() {
   const server = new McpServer({
-    name: 'claude-threads-mcp',
+    name: 'tandem-mcp',
     version: '1.0.0',
   });
 
