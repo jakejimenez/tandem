@@ -40,6 +40,7 @@ function createTestSession(platform: PlatformClient): Session {
     sessionAllowedUsers: new Set(['testuser']),
     forceInteractivePermissions: false,
     respondOnlyWhenMentioned: false,
+    harnessType: 'claude-code' as const,
     sessionStartPostId: 'start_post',
     sessionHeaderMode: 'full',
     timers: createSessionTimers(),

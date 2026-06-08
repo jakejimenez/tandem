@@ -2,7 +2,7 @@
  * Session management types and interfaces
  */
 
-import type { HarnessProcess } from '../harness/adapter.js';
+import type { HarnessProcess, HarnessType } from '../harness/adapter.js';
 import type { PlatformClient, PlatformFile } from '../platform/index.js';
 import type { OverheadVisibility, PermissionMode } from '../config/index.js';
 import type { WorktreeInfo } from '../persistence/session-store.js';
@@ -44,6 +44,11 @@ export interface InitialSessionOptions {
   forceInteractivePermissions?: boolean;
   /** Switch to existing worktree instead of creating new (from !worktree switch) */
   switchToExisting?: boolean;
+  /**
+   * Which harness to use for this session. Defaults to 'claude-code' when
+   * not set, falling back through user pref → config default → 'claude-code'.
+   */
+  harnessType?: HarnessType;
 }
 
 // =============================================================================
@@ -267,6 +272,9 @@ export interface Session {
 
   // Harness process (Claude Code, Codex, Pi, or OpenCode)
   claude: HarnessProcess;
+
+  /** Which harness adapter this session is running under. */
+  harnessType: HarnessType;
 
   // Claude account id the session is running under (when the bot is configured
   // with a `claudeAccounts` pool). Undefined in single-account mode.

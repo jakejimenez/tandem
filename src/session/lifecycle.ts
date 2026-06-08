@@ -20,6 +20,9 @@ import { isAuthorizedForSession } from './authorization.js';
 import type { PlatformClient, PlatformFile } from '../platform/index.js';
 import type { ClaudeCliOptions, ClaudeEvent, RateLimitHit } from '../claude/cli.js';
 import { ClaudeCli } from '../claude/cli.js';
+import { createHarness } from '../harness/registry.js';
+import { getUserHarnessPreference } from '../harness/prefs.js';
+import type { HarnessType } from '../harness/adapter.js';
 import { cooldownDeadline } from '../claude/rate-limit-detector.js';
 import type { PersistedSession } from '../persistence/session-store.js';
 import { createThreadLogger } from '../persistence/thread-logger.js';
@@ -1013,7 +1016,18 @@ export async function startSession(
     outboundFiles: platformMcpConfig.outboundFiles,
     sessionOwnerUsername: username,
   };
-  const claude = new ClaudeCli(cliOptions);
+
+  // Determine which harness to use: explicit option > user pref > config default > 'claude-code'
+  const harnessType: HarnessType =
+    initialOptions?.harnessType ??
+    getUserHarnessPreference(platformId, username) ??
+    'claude-code';
+
+  const claude = createHarness(harnessType, {
+    claudeCliOptions: cliOptions,
+    workingDir,
+    prompt: options.prompt,
+  });
 
   // Create the session object
   const session: Session = {
@@ -1030,6 +1044,7 @@ export async function startSession(
     sessionNumber: ctx.state.sessions.size + 1,
     workingDir,
     claude,
+    harnessType,
     planApproved: false,
     sessionAllowedUsers: new Set([username]),
     forceInteractivePermissions,
@@ -1287,7 +1302,15 @@ export async function resumeSession(
     outboundFiles: platformMcpConfig.outboundFiles,
     sessionOwnerUsername: state.startedBy,
   };
-  const claude = new ClaudeCli(cliOptions);
+
+  // Resumed sessions default to 'claude-code' — persisted harnessType not yet
+  // stored in PersistedSession (backward-compat: old sessions have no field).
+  const resumeHarnessType: HarnessType = 'claude-code';
+
+  const claude = createHarness(resumeHarnessType, {
+    claudeCliOptions: cliOptions,
+    workingDir: state.workingDir,
+  });
 
   // Rebuild Session object from persisted state
   const session: Session = {
@@ -1304,6 +1327,7 @@ export async function resumeSession(
     sessionNumber: state.sessionNumber ?? 1,
     workingDir: state.workingDir,
     claude,
+    harnessType: resumeHarnessType,
     planApproved: state.planApproved ?? false,
     sessionAllowedUsers: new Set(state.sessionAllowedUsers),
     forceInteractivePermissions: state.forceInteractivePermissions ?? false,

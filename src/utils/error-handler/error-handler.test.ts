@@ -69,6 +69,7 @@ function createMockSession(): Session {
     // Timers and lifecycle
     timers: createSessionTimers(),
     lifecycle: createSessionLifecycle(),
+    harnessType: 'claude-code' as const,
   } as Session;
 }
 

@@ -7,6 +7,7 @@
 
 import { COMMAND_REGISTRY } from './registry.js';
 import type { PermissionMode } from '../config/index.js';
+import type { HarnessType } from '../harness/adapter.js';
 import type {
   CommandExecutorContext,
   CommandHandler,
@@ -438,6 +439,65 @@ const handlePlugin: CommandHandler = async (ctx, args) => {
   return { handled: true };
 };
 
+/** Known harness type strings for validation. */
+const VALID_HARNESS_TYPES = new Set<HarnessType>(['claude-code', 'codex', 'pi', 'opencode']);
+
+function isHarnessType(value: string): value is HarnessType {
+  return VALID_HARNESS_TYPES.has(value as HarnessType);
+}
+
+/**
+ * Handle !harness command.
+ *
+ * Sub-commands:
+ *   !harness list          — list all detected harnesses
+ *   !harness <type>        — switch to harness (starts a new session)
+ *   !harness use <type>    — set per-user default harness (in-memory)
+ */
+const handleHarness: CommandHandler = async (ctx, args) => {
+  if (ctx.commandContext === 'first-message') {
+    return { handled: false }; // !harness requires an existing session
+  }
+  if (!ctx.isAllowed) {
+    return { handled: true };
+  }
+
+  const parts = (args ?? '').trim().split(/\s+/).filter(Boolean);
+  const sub = parts[0]?.toLowerCase();
+
+  // !harness list
+  if (!sub || sub === 'list') {
+    await ctx.sessionManager.listHarnesses(ctx.threadId);
+    return { handled: true };
+  }
+
+  // !harness use <type>
+  if (sub === 'use') {
+    const typeArg = parts[1]?.toLowerCase();
+    if (!typeArg || !isHarnessType(typeArg)) {
+      await ctx.client.createPost(
+        `❌ Unknown harness type ${ctx.formatter.formatCode(typeArg ?? '')}. Valid types: ${[...VALID_HARNESS_TYPES].map(t => ctx.formatter.formatCode(t)).join(', ')}.`,
+        ctx.threadId,
+      );
+      return { handled: true };
+    }
+    await ctx.sessionManager.setUserHarnessDefault(ctx.threadId, typeArg, ctx.username);
+    return { handled: true };
+  }
+
+  // !harness <type>  — switch
+  if (!isHarnessType(sub)) {
+    await ctx.client.createPost(
+      `❌ Unknown harness type ${ctx.formatter.formatCode(sub)}. Valid types: ${[...VALID_HARNESS_TYPES].map(t => ctx.formatter.formatCode(t)).join(', ')}.`,
+      ctx.threadId,
+    );
+    return { handled: true };
+  }
+
+  await ctx.sessionManager.switchHarness(ctx.threadId, sub, ctx.username);
+  return { handled: true };
+};
+
 /**
  * Create a passthrough handler for Claude Code slash commands.
  */
@@ -475,6 +535,7 @@ handlers.set('mentions', handleMentions);
 handlers.set('worktree', handleWorktree);
 handlers.set('bug', handleBug);
 handlers.set('plugin', handlePlugin);
+handlers.set('harness', handleHarness);
 
 // Passthrough commands
 handlers.set('context', createPassthroughHandler('context'));

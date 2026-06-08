@@ -149,6 +149,7 @@ function createMockSession(overrides?: Partial<Session> & {
     skipPermissions: true,
     forceInteractivePermissions: false,
     respondOnlyWhenMentioned: false,
+    harnessType: 'claude-code' as const,
     messageManager: createMockMessageManager() as any,
     ...overrides,
   } as Session;
