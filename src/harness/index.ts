@@ -7,3 +7,4 @@
 
 export type { Capabilities, HarnessType, HarnessInfo } from './adapter.js';
 export { detectHarnesses, getDefaultHarness } from './registry.js';
+export { CodexCli, CODEX_CAPABILITIES } from './codex/index.js';
