@@ -330,7 +330,7 @@ export function buildPermissionArgs(opts: {
 
   const mcpConfig: McpConfigBlob = {
     mcpServers: {
-      'claude-threads-mcp': {
+      'tandem-mcp': {
         type: 'stdio',
         command: 'node',
         args: [opts.mcpServerPath],
@@ -357,7 +357,7 @@ export function buildPermissionArgs(opts: {
   if (opts.permissionMode === 'bypass') {
     args.push('--dangerously-skip-permissions');
   } else {
-    args.push('--permission-prompt-tool', 'mcp__claude-threads-mcp__permission_prompt');
+    args.push('--permission-prompt-tool', 'mcp__tandem-mcp__permission_prompt');
     if (opts.permissionMode === 'auto') {
       args.push('--permission-mode', 'auto');
     }

@@ -423,7 +423,7 @@ describe('handlePermissionWith', () => {
     const api = new FakeApi();
     const cfg = makeCfg(api, { initialAllowAll: false });
     const result = await handlePermissionWith(
-      'mcp__claude-threads-mcp__send_file',
+      'mcp__tandem-mcp__send_file',
       { path: '/some/file.png' },
       cfg,
     );
@@ -818,7 +818,7 @@ describe('handlePermissionWith — read_post auto-approval', () => {
     const api = new FakeApi();
     const cfg = makeCfg(api);
     const result = await handlePermissionWith(
-      'mcp__claude-threads-mcp__read_post',
+      'mcp__tandem-mcp__read_post',
       { url: 'https://example.test/team/pl/abc' },
       cfg,
     );
@@ -830,9 +830,9 @@ describe('handlePermissionWith — read_post auto-approval', () => {
 
 describe('handlePermissionWith — auto-approval for new tools', () => {
   it.each([
-    ['mcp__claude-threads-mcp__react_to_post', { url: 'x', emoji: 'x' }],
-    ['mcp__claude-threads-mcp__update_own_post', { url: 'x', message: 'x' }],
-    ['mcp__claude-threads-mcp__list_thread', { url: 'x' }],
+    ['mcp__tandem-mcp__react_to_post', { url: 'x', emoji: 'x' }],
+    ['mcp__tandem-mcp__update_own_post', { url: 'x', message: 'x' }],
+    ['mcp__tandem-mcp__list_thread', { url: 'x' }],
   ] as const)('auto-allows %s without prompting', async (toolName, input) => {
     const api = new FakeApi();
     const cfg = makeCfg(api);
@@ -1473,9 +1473,9 @@ describe('handleSearchMessagesWith', () => {
 
 describe('handlePermissionWith — auto-approval for read_channel_history and search_messages', () => {
   it.each([
-    ['mcp__claude-threads-mcp__read_channel_history', { channel_id: 'x' }],
-    ['mcp__claude-threads-mcp__search_messages', { query: 'x' }],
-    ['mcp__claude-threads-mcp__send_dm', { recipient: 'x', message: 'x' }],
+    ['mcp__tandem-mcp__read_channel_history', { channel_id: 'x' }],
+    ['mcp__tandem-mcp__search_messages', { query: 'x' }],
+    ['mcp__tandem-mcp__send_dm', { recipient: 'x', message: 'x' }],
   ] as const)('skips standard prompt for %s (handler runs its own gate)', async (toolName, input) => {
     const api = new FakeApi();
     const cfg = makeCfg(api);
@@ -1804,11 +1804,11 @@ describe('handleSendDmWith', () => {
     );
     expect(api.sendDirectMessageCalls).toHaveLength(1);
     const sent = api.sendDirectMessageCalls[0].message;
-    expect(sent).toMatch(/automated message via claude-threads/);
+    expect(sent).toMatch(/automated message via tandem/);
     expect(sent).toMatch(/@anne/);
     expect(sent).toContain('the body');
     // Prefix appears before the body.
-    const prefixIdx = sent.indexOf('claude-threads');
+    const prefixIdx = sent.indexOf('tandem');
     const bodyIdx = sent.indexOf('the body');
     expect(prefixIdx).toBeLessThan(bodyIdx);
   });
@@ -1825,7 +1825,7 @@ describe('handleSendDmWith', () => {
     );
     const sent = api.sendDirectMessageCalls[0].message;
     // Still has the bot-self-identification, just without the owner mention.
-    expect(sent).toMatch(/automated message via claude-threads/);
+    expect(sent).toMatch(/automated message via tandem/);
     expect(sent).not.toMatch(/on behalf of/);
   });
 
