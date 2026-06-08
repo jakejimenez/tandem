@@ -1,0 +1,370 @@
+/* Terminal-minimal CSS for claude-threads */
+
+:root {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252526;
+  --text-primary: #cccccc;
+  --text-secondary: #8b949e;
+  --accent: #5f87af;
+  --accent-orange: #d7af5f;
+  --border: #3c3c3c;
+  --font-mono:
+    "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-mono);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: var(--font-mono);
+  background: var(--bg-secondary);
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--border);
+  font-size: 0.95em;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+/* Hero */
+.hero {
+  padding: 3rem 0 2rem;
+}
+
+.ascii-logo {
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.ascii-logo .star {
+  color: var(--accent-orange);
+}
+
+.hero-text {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  max-width: 500px;
+}
+
+.copyable {
+  cursor: pointer;
+}
+
+.copyable:hover .copy-hint {
+  opacity: 1;
+}
+
+.copy-hint {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-top: 0.25rem;
+}
+
+.install-buttons {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.install-buttons .separator {
+  color: var(--text-secondary);
+  line-height: 3.1;
+}
+
+.install-cmd {
+  display: inline-block;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.install-cmd.install-alt {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.install-cmd::before {
+  content: "$ ";
+  color: var(--text-secondary);
+}
+
+.hero-links {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.license {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.btn::before {
+  content: "[ ";
+}
+
+.btn::after {
+  content: " ]";
+}
+
+/* Screenshot */
+.screenshot {
+  padding: 2rem 0;
+}
+
+.screenshot-scroll {
+  height: 450px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  max-width: 700px;
+  position: relative;
+}
+
+.screenshot-scroll img {
+  width: 100%;
+  display: block;
+  will-change: transform;
+}
+
+/* Sections */
+section {
+  padding: 2rem 0;
+}
+
+/* Features - simple list */
+.features ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.features li {
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+
+.features li::before {
+  content: "- ";
+  color: var(--text-secondary);
+}
+
+/* Why section */
+.why p {
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-bottom: 1rem;
+}
+
+/* Commands table */
+.commands table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.commands th,
+.commands td {
+  text-align: left;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.commands th {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.commands td:first-child {
+  width: 180px;
+}
+
+.commands code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+}
+
+/* Controls - compact emoji reference */
+.controls-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.control-group h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.control-group p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.emoji-row {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.emoji-row span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.emoji-row .emoji {
+  font-size: 1.1rem;
+}
+
+/* Quickstart */
+.quickstart .copyable {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.quickstart pre {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.quickstart .prereq {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* Platforms */
+.platform-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.platform-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+}
+
+.platform-link img {
+  width: 24px;
+  height: 24px;
+}
+
+.platform-link:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Footer */
+footer {
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+footer a {
+  color: var(--text-secondary);
+}
+
+footer a:hover {
+  color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ascii-logo {
+    font-size: 1.4rem;
+  }
+
+  .screenshot-scroll {
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .controls-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .platform-links {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

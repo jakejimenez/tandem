@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#151517"/>
+
+  <!-- Sparkles (yellow) -->
+  <path d="M5 6 L6 7 L5 8 L4 7 Z" fill="#eab308"/>
+  <path d="M27 6 L28 7 L27 8 L26 7 Z" fill="#eab308"/>
+
+  <!-- CT block characters (blue) - simplified -->
+  <text x="6" y="22" font-family="monospace" font-size="12" font-weight="bold" fill="#3b82f6">CT</text>
+</svg>
