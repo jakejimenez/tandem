@@ -37,3 +37,27 @@ export interface HarnessInfo {
   version: string | null;
   available: boolean;
 }
+
+import type { StatusLineData } from '../claude/cli.js';
+
+/**
+ * The subset of methods and events any harness process must expose.
+ * ClaudeCli already satisfies this structurally — no changes to ClaudeCli needed.
+ * New adapters (Codex, Pi, OpenCode) implement this interface.
+ */
+export interface HarnessProcess {
+  // EventEmitter subset — use any for listener args to match Node's EventEmitter
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  on(event: string, listener: (...args: any[]) => void): this;
+
+  // Process control
+  start(): void | Promise<void>;
+  sendMessage(text: string): void;
+  isRunning(): boolean;
+  kill(): Promise<void>;
+  isPermanentFailure(): boolean;
+  getPermanentFailureReason(): string | null;
+  interrupt(): boolean;
+  // Claude Code reads its status-line file; other adapters return null.
+  getStatusData(): StatusLineData | null;
+}
