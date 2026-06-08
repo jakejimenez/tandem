@@ -2,7 +2,7 @@
  * Session management types and interfaces
  */
 
-import type { ClaudeCli } from '../claude/cli.js';
+import type { HarnessProcess } from '../harness/adapter.js';
 import type { PlatformClient, PlatformFile } from '../platform/index.js';
 import type { OverheadVisibility, PermissionMode } from '../config/index.js';
 import type { WorktreeInfo } from '../persistence/session-store.js';
@@ -265,8 +265,8 @@ export interface Session {
   // Working directory (can be changed per-session)
   workingDir: string;
 
-  // Claude process
-  claude: ClaudeCli;
+  // Harness process (Claude Code, Codex, Pi, or OpenCode)
+  claude: HarnessProcess;
 
   // Claude account id the session is running under (when the bot is configured
   // with a `claudeAccounts` pool). Undefined in single-account mode.
