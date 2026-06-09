@@ -241,6 +241,11 @@ export interface Config {
    * Individual channels may override via `ChannelConfig.maxConcurrent`.
    */
   maxConcurrent?: number;
+  /**
+   * Default AI coding harness to use for new sessions.
+   * When omitted, defaults to 'claude-code'.
+   */
+  defaultHarness?: HarnessType;
   platforms: PlatformInstanceConfig[];
 }
 

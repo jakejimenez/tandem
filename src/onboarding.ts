@@ -21,6 +21,8 @@ import {
 } from './config/index.js';
 import { bold, dim, green } from './utils/colors.js';
 import { validateClaudeCli } from './claude/version-check.js';
+import { detectHarnesses } from './harness/registry.js';
+import type { HarnessType } from './harness/adapter.js';
 
 /**
  * Common choices list for the three-way permission-mode picker, reused by
@@ -371,6 +373,68 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
 
   console.log('');
 
+  // Step 1.5: Harness detection and selection
+  console.log(dim('  Detecting AI coding harnesses...'));
+  const allHarnesses = await detectHarnesses();
+  const availableHarnesses = allHarnesses.filter(h => h.available);
+
+  if (availableHarnesses.length > 0) {
+    for (const h of availableHarnesses) {
+      const versionStr = h.version ? `  v${h.version}` : '';
+      const isDefault = h.type === 'claude-code' ? '  (default)' : '';
+      console.log(green(`  ✓ ${h.displayName}`) + dim(`${versionStr}${isDefault}`));
+    }
+  } else {
+    console.log(dim('  (no harnesses detected)'));
+  }
+  console.log('');
+
+  let selectedHarness: HarnessType = 'claude-code';
+
+  if (availableHarnesses.length > 1) {
+    const harnessChoices = availableHarnesses.map(h => ({
+      title: `${h.type}  (${h.displayName})`,
+      value: h.type as HarnessType,
+    }));
+
+    const { defaultHarness } = await prompts({
+      type: 'select',
+      name: 'defaultHarness',
+      message: 'Which harness do you want to use by default?',
+      choices: harnessChoices,
+      initial: 0,
+    }, { onCancel });
+
+    selectedHarness = defaultHarness ?? 'claude-code';
+  } else if (availableHarnesses.length === 1) {
+    selectedHarness = availableHarnesses[0].type;
+  }
+
+  // API key prompt for harnesses that need one
+  if (selectedHarness === 'codex') {
+    console.log('');
+    console.log(dim('  Codex requires an OpenAI API key.'));
+    const { openaiApiKey } = await prompts({
+      type: 'password',
+      name: 'openaiApiKey',
+      message: 'OpenAI API key (sk-...)',
+      validate: (v: string) => v.length > 0 ? true : 'API key is required',
+    }, { onCancel });
+
+    if (openaiApiKey) {
+      process.env.OPENAI_API_KEY = openaiApiKey;
+    }
+  } else if (selectedHarness === 'opencode') {
+    console.log('');
+    console.log(dim('  OpenCode uses your configured AI provider (e.g., Anthropic, OpenAI).'));
+    console.log(dim('  If you need an API key, set it in your environment (e.g., ANTHROPIC_API_KEY).'));
+  } else if (selectedHarness === 'pi') {
+    console.log('');
+    console.log(dim('  Pi uses its own authentication — no additional API key needed here.'));
+  }
+
+  console.log('');
+
   // Step 1: Global settings
   const globalSettings = await prompts([
     {
@@ -411,6 +475,7 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
   const config: Config = {
     version: 2,
     ...globalSettings,
+    ...(selectedHarness !== 'claude-code' ? { defaultHarness: selectedHarness } : {}),
     platforms: [],
   };
 
