@@ -13,6 +13,13 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target node && bun build src/mcp/mcp-server.ts --outdir dist/mcp --target node && bun build src/statusline/writer.ts --outdir dist/statusline --target node",
+    "compile": "bun build --compile --minify src/index.ts --outfile dist/tandem",
+    "compile:linux-x64": "bun build --compile --minify --target=bun-linux-x64 src/index.ts --outfile dist/tandem-linux-x64",
+    "compile:linux-arm64": "bun build --compile --minify --target=bun-linux-arm64 src/index.ts --outfile dist/tandem-linux-arm64",
+    "compile:darwin-x64": "bun build --compile --minify --target=bun-darwin-x64 src/index.ts --outfile dist/tandem-darwin-x64",
+    "compile:darwin-arm64": "bun build --compile --minify --target=bun-darwin-arm64 src/index.ts --outfile dist/tandem-darwin-arm64",
+    "compile:windows-x64": "bun build --compile --minify --target=bun-windows-x64 src/index.ts --outfile dist/tandem-windows-x64.exe",
+    "compile:all": "bun run compile:linux-x64 && bun run compile:linux-arm64 && bun run compile:darwin-x64 && bun run compile:darwin-arm64 && bun run compile:windows-x64",
     "start": "bun dist/index.js",
     "test": "bun test src/",
     "test:watch": "bun test src/ --watch",
