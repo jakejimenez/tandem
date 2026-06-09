@@ -1,11 +1,11 @@
 display_information:
-  name: Claude Code
-  description: Chat with Claude Code through Slack
+  name: tandem
+  description: Chat with Tandem through Slack
   background_color: "#4a154b"
 
 features:
   bot_user:
-    display_name: Claude Code
+    display_name: tandem
     always_online: true
 
 oauth_config:
