@@ -167,7 +167,7 @@ export function getClaudeCliVersion(): ClaudeVersionResult {
 }
 
 /**
- * Check if a version is compatible with claude-threads.
+ * Check if a version is compatible with tandem.
  */
 export function isVersionCompatible(version: string): boolean {
   const semverVersion = coerce(version);

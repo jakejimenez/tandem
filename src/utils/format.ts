@@ -101,7 +101,7 @@ export function formatRelativeTimeShort(date: Date): string {
 
 /**
  * Format version string for status bar display.
- * CT = claude-threads, CC = Claude Code (the CLI).
+ * CT = tandem, CC = Claude Code (the CLI).
  *
  * @returns Formatted string like "CT v1.3.1 · CC v2.1.12" or "CT v1.3.1" if no CLI version
  */

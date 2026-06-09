@@ -13,7 +13,7 @@ import type { UpdateInfo, AutoUpdateConfig } from './types.js';
 const log = createLogger('checker');
 
 // Package name for npm registry lookup
-const PACKAGE_NAME = 'claude-threads';
+const PACKAGE_NAME = 'tandem';
 
 /**
  * Compare two semver versions.

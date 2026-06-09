@@ -30,7 +30,7 @@ function loadPackageJson(): PackageInfo {
     if (existsSync(candidate)) {
       try {
         const pkg = JSON.parse(readFileSync(candidate, 'utf-8'));
-        if (pkg.name === 'tandem' || pkg.name === 'claude-threads') {
+        if (pkg.name === 'tandem') {
           return { version: pkg.version, name: pkg.name };
         }
       } catch {
@@ -40,7 +40,7 @@ function loadPackageJson(): PackageInfo {
   }
 
   // Fallback if package.json not found
-  return { version: 'unknown', name: 'claude-threads' };
+  return { version: 'unknown', name: 'tandem' };
 }
 
 // Cache the result

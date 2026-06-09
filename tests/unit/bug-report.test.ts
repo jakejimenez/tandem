@@ -381,7 +381,7 @@ describe('formatIssueBody', () => {
     const context = createMockContext();
     const body = formatIssueBody(context, 'Test');
 
-    expect(body).toContain('Reported via claude-threads bug report feature');
+    expect(body).toContain('Reported via tandem bug report feature');
   });
 
   it('should handle missing optional fields', () => {

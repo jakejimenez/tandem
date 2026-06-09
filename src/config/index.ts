@@ -38,7 +38,7 @@ export {
 import type { Config, WorktreeMode as WorktreeModeType, PermissionMode, OverheadVisibility } from './types.js';
 
 // YAML config path
-export const CONFIG_PATH = resolve(homedir(), '.config', 'claude-threads', 'config.yaml');
+export const CONFIG_PATH = resolve(homedir(), '.config', 'tandem', 'config.yaml');
 
 // =============================================================================
 // Config Loading

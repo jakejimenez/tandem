@@ -1,7 +1,7 @@
 /**
  * Headless bot starter for integration tests
  *
- * Creates a claude-threads bot without the Ink UI, allowing us to test
+ * Creates a tandem bot without the Ink UI, allowing us to test
  * the full session lifecycle in a non-TTY environment.
  *
  * IMPORTANT: This uses the actual message handler from src/message-handler.ts
@@ -30,7 +30,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  */
 function generateTestSessionsPath(): string {
   const testRunId = randomBytes(4).toString('hex');
-  const sessionsDir = join(tmpdir(), 'claude-threads-test');
+  const sessionsDir = join(tmpdir(), 'tandem-test');
   mkdirSync(sessionsDir, { recursive: true });
   return join(sessionsDir, `sessions-${testRunId}.json`);
 }
@@ -123,14 +123,14 @@ export interface StartBotOptions {
 /**
  * Start a headless test bot
  *
- * This creates a fully functional claude-threads bot without the Ink UI,
+ * This creates a fully functional tandem bot without the Ink UI,
  * using the mock Claude CLI for deterministic testing.
  */
 export async function startTestBot(options: StartBotOptions = {}): Promise<TestBot> {
   const {
     scenario = 'simple-response',
     skipPermissions = true,
-    workingDir = '/tmp/claude-threads-test',
+    workingDir = '/tmp/tandem-test',
     extraAllowedUsers = [],
     debug = process.env.DEBUG === '1',
     clearPersistedSessions = true,
@@ -156,7 +156,7 @@ export async function startTestBot(options: StartBotOptions = {}): Promise<TestB
   // This prevents session state from leaking between test files
   // Priority: explicit path > generate new path
   const sessionsPath = explicitSessionsPath ?? generateTestSessionsPath();
-  process.env.CLAUDE_THREADS_SESSIONS_PATH = sessionsPath;
+  process.env.TANDEM_SESSIONS_PATH = sessionsPath;
 
   // Clear persisted sessions to avoid "Thread deleted, skipping resume" noise
   if (clearPersistedSessions) {
@@ -342,7 +342,7 @@ export async function startTestBot(options: StartBotOptions = {}): Promise<TestB
       // Note: Don't delete CLAUDE_PATH/CLAUDE_SCENARIO here - the next test will
       // set them anyway, and deleting them can cause race conditions with async
       // operations that are still running.
-      delete process.env.CLAUDE_THREADS_SESSIONS_PATH;
+      delete process.env.TANDEM_SESSIONS_PATH;
       if (debug) {
         console.log('[test-bot] Stopped');
       }
@@ -358,7 +358,7 @@ export async function startTestBot(options: StartBotOptions = {}): Promise<TestB
       await platformClient.disconnect();
       await new Promise((r) => setTimeout(r, 500));
       // Note: Keep all env vars - CLAUDE_PATH/CLAUDE_SCENARIO will be set by next test,
-      // and CLAUDE_THREADS_SESSIONS_PATH needs to persist for session resume testing
+      // and TANDEM_SESSIONS_PATH needs to persist for session resume testing
       if (debug) {
         console.log('[test-bot] Stopped (sessions preserved)');
       }

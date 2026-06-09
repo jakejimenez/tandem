@@ -154,14 +154,14 @@ describe('buildStickyMessage', () => {
     expect(result).toContain('Active Claude Threads');
     expect(result).toContain('No active sessions');
     expect(result).toContain('Mention me to start a session');
-    expect(result).toContain('bun install -g claude-threads');
+    expect(result).toContain('bun install -g tandem');
   });
 
   it('shows status bar with version and session count', async () => {
     const sessions = new Map<string, Session>();
     const result = await buildStickyMessage(sessions, 'test-platform', testConfig, mockFormatter, (threadId) => `/_redirect/pl/${threadId}`);
 
-    // Should contain version (CT = claude-threads, CC = Claude Code)
+    // Should contain version (CT = tandem, CC = Claude Code)
     expect(result).toMatch(/`CT v\d+\.\d+\.\d+( · CC v\d+\.\d+\.\d+)?`/);
     // Should contain session count
     expect(result).toContain('`0/5 sessions`');

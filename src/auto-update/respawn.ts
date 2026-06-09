@@ -3,12 +3,12 @@
  *
  * Background: when the bot is started directly in a terminal (no daemon
  * wrapper, no supervisor), a `!update` exits the process and there is
- * nothing to bring it back. The bash daemon (bin/claude-threads-daemon)
+ * nothing to bring it back. The bash daemon (bin/tandem-daemon)
  * solves this for unattended deployments by catching exit code 42 and
  * re-execing, but that daemon strips the TTY from the child, so it is
  * deliberately skipped for interactive users (src/index.ts:154).
  *
- * The fix: have the bot respawn itself. Spawning the new `claude-threads`
+ * The fix: have the bot respawn itself. Spawning the new `tandem`
  * binary with `{ detached: true, stdio: 'inherit' }`, then `unref()` and
  * `process.exit(0)`, hands the controlling terminal off to the new
  * process. The Node docs explicitly cover this combination: when stdio
@@ -16,18 +16,18 @@
  *
  * `decideRespawn()` returns either:
  *   - `self-respawn`: the bot has a TTY and no detected supervisor.
- *     The caller resolves the binary on PATH (`resolveClaudeThreadsBin`)
+ *     The caller resolves the binary on PATH (`resolveTandemBin`)
  *     and runs `spawnReplacement`.
  *   - `exit-for-supervisor`: a known supervisor will handle the restart
  *     (bash daemon, pm2, systemd, or a wrapper signaled by
- *     `CLAUDE_THREADS_INTERACTIVE`). The caller exits with code 42 to
+ *     `TANDEM_INTERACTIVE`). The caller exits with code 42 to
  *     trigger the supervisor's restart path.
  *   - `exit-for-supervisor` with `none-headless`: no supervisor and no
- *     TTY. The caller broadcasts a "please run claude-threads" message
+ *     TTY. The caller broadcasts a "please run tandem" message
  *     and exits 0; the user's invoker decides what to do next.
  *
  * If self-respawn is chosen but the binary cannot be resolved on PATH,
- * the caller falls through to the same "please run claude-threads"
+ * the caller falls through to the same "please run tandem"
  * broadcast as the headless case rather than disappearing silently.
  */
 
@@ -40,7 +40,7 @@ const log = createLogger('respawn');
 
 /** Identifier for the supervisor that will handle the restart. */
 export type SupervisorKind =
-  | 'claude-threads-daemon'
+  | 'tandem-daemon'
   | 'systemd'
   | 'pm2'
   | 'wrapped-tty'
@@ -61,10 +61,10 @@ export function decideRespawn(
   env: NodeJS.ProcessEnv = process.env,
   isTTY: boolean = !!process.stdout.isTTY
 ): RespawnDecision {
-  // Bash daemon (bin/claude-threads-daemon) sets this when it spawns us.
+  // Bash daemon (bin/tandem-daemon) sets this when it spawns us.
   // It already loops on exit code 42, so we should not double-restart.
-  if (env.CLAUDE_THREADS_BIN) {
-    return { kind: 'exit-for-supervisor', supervisor: 'claude-threads-daemon' };
+  if (env.TANDEM_BIN) {
+    return { kind: 'exit-for-supervisor', supervisor: 'tandem-daemon' };
   }
 
   // pm2 sets pm_id (numeric, 0+) when running under pm2. We also check
@@ -75,21 +75,21 @@ export function decideRespawn(
   }
 
   // systemd sets INVOCATION_ID for every unit invocation. Note: the
-  // shipped service file (docs/systemd/claude-threads.service) goes
+  // shipped service file (docs/systemd/tandem.service) goes
   // through the bash daemon, so most systemd users hit the daemon
   // branch above. This branch only fires when a user has wired
-  // claude-threads directly under systemd's `Restart=on-failure`. We
+  // tandem directly under systemd's `Restart=on-failure`. We
   // still want systemd to do the restart in that case so its restart
   // counters and rate-limiting work as configured.
   if (env.INVOCATION_ID) {
     return { kind: 'exit-for-supervisor', supervisor: 'systemd' };
   }
 
-  // CLAUDE_THREADS_INTERACTIVE was historically used by wrappers to
+  // TANDEM_INTERACTIVE was historically used by wrappers to
   // force TTY mode (PRs #299/#300/#312/#317). If a user is running
   // under such a wrapper, exit-42 lets the wrapper handle the restart
   // and we don't fight it for TTY ownership.
-  if (env.CLAUDE_THREADS_INTERACTIVE) {
+  if (env.TANDEM_INTERACTIVE) {
     return { kind: 'exit-for-supervisor', supervisor: 'wrapped-tty' };
   }
 
@@ -105,7 +105,7 @@ export function decideRespawn(
 }
 
 /**
- * Resolve the absolute path to the `claude-threads` binary on PATH,
+ * Resolve the absolute path to the `tandem` binary on PATH,
  * synchronously. Returns null if not found.
  *
  * Why synchronous and pre-spawn: `child_process.spawn` does NOT throw
@@ -120,15 +120,15 @@ export function decideRespawn(
  *
  * `_pathOverride` and `_existsSync` are injectable for tests.
  */
-export function resolveClaudeThreadsBin(
+export function resolveTandemBin(
   _env: NodeJS.ProcessEnv = process.env,
   _existsSync: (p: string) => boolean = existsSync,
   _isFileExecutable: (p: string) => boolean = isFileExecutable
 ): string | null {
   const isWin = process.platform === 'win32';
   const names = isWin
-    ? ['claude-threads.cmd', 'claude-threads.exe', 'claude-threads.bat']
-    : ['claude-threads'];
+    ? ['tandem.cmd', 'tandem.exe', 'tandem.bat']
+    : ['tandem'];
 
   const path = _env.PATH || _env.Path || '';
   const dirs = path.split(delimiter).filter(Boolean);
@@ -176,7 +176,7 @@ function isFileExecutable(path: string): boolean {
 }
 
 /**
- * Spawn a fresh `claude-threads` process and detach so this process
+ * Spawn a fresh `tandem` process and detach so this process
  * can exit cleanly while the new one takes over the controlling
  * terminal. Re-passes the original argv (excluding node + script path).
  *
@@ -189,10 +189,10 @@ function isFileExecutable(path: string): boolean {
  */
 export function spawnReplacement(
   argv: string[] = process.argv.slice(2),
-  binPath: string | null = resolveClaudeThreadsBin()
+  binPath: string | null = resolveTandemBin()
 ): boolean {
   if (!binPath) {
-    log.error('Could not resolve claude-threads on PATH; self-respawn aborted');
+    log.error('Could not resolve tandem on PATH; self-respawn aborted');
     return false;
   }
 
@@ -208,8 +208,8 @@ export function spawnReplacement(
   // omitted (Node omits, Bun passes the literal string "undefined" as
   // verified empirically). We delete instead.
   const childEnv: NodeJS.ProcessEnv = { ...process.env };
-  delete childEnv.CLAUDE_THREADS_BIN;
-  delete childEnv.CLAUDE_THREADS_INTERACTIVE;
+  delete childEnv.TANDEM_BIN;
+  delete childEnv.TANDEM_INTERACTIVE;
 
   // On Windows, .cmd/.bat shims must be invoked via the shell since
   // Node 20.12.2 (CVE-2024-27980). On POSIX, shell:false is correct.

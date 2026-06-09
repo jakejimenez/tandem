@@ -1,7 +1,7 @@
 /**
  * Thread Logger - Persists Claude events and messages to JSONL files
  *
- * Stores logs in ~/.claude-threads/logs/{platformId}/{threadId}.jsonl
+ * Stores logs in ~/.local/share/tandem/logs/{platformId}/{threadId}.jsonl
  * Each line is a JSON object representing an event with timestamp.
  */
 
@@ -14,7 +14,7 @@ import type { ClaudeEvent } from '../claude/cli.js';
 const log = createLogger('thread-log');
 
 // Base directory for thread logs (data directory, not config)
-const LOGS_BASE_DIR = join(homedir(), '.claude-threads', 'logs');
+const LOGS_BASE_DIR = join(homedir(), '.local', 'share', 'tandem', 'logs');
 
 // =============================================================================
 // Log Entry Types

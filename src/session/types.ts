@@ -225,7 +225,7 @@ export function isSessionCancelled(session: Session): boolean {
  *
  * Routes through the FSM in `lifecycle-fsm.ts` — illegal transitions are
  * logged at `warn` level by default, and throw when
- * `CLAUDE_THREADS_FSM_STRICT=1` is set. The state assignment still happens
+ * `TANDEM_FSM_STRICT=1` is set. The state assignment still happens
  * either way (warn mode is observational, not enforcing).
  */
 export function transitionTo(session: Session, newState: SessionLifecycleState): void {

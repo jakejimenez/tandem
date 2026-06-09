@@ -315,7 +315,7 @@ describe('formatIssueBody', () => {
 
   test('includes footer', () => {
     const body = formatIssueBody(mockContext, 'Test');
-    expect(body).toContain('Reported via claude-threads bug report feature');
+    expect(body).toContain('Reported via tandem bug report feature');
   });
 });
 

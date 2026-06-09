@@ -394,7 +394,7 @@ describe('getLogFilePath', () => {
   it('returns correct path format', () => {
     // Second parameter is sessionId (not threadId)
     const path = getLogFilePath('mattermost-main', 'session-abc123');
-    expect(path).toContain('.claude-threads/logs/mattermost-main/session-abc123.jsonl');
+    expect(path).toContain('.local/share/tandem/logs/mattermost-main/session-abc123.jsonl');
   });
 });
 

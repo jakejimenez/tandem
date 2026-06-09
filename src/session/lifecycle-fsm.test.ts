@@ -3,7 +3,7 @@
  *
  * Two modes:
  * - warn-only (default): illegal transitions log but don't throw.
- * - strict (`CLAUDE_THREADS_FSM_STRICT=1`): illegal transitions throw.
+ * - strict (`TANDEM_FSM_STRICT=1`): illegal transitions throw.
  *
  * The allowed-transition table is the contract. These tests pin it so that
  * changing an entry requires thinking about *why* — the warn logs in
@@ -85,15 +85,15 @@ describe('lifecycle FSM', () => {
     let original: string | undefined;
 
     beforeEach(() => {
-      original = process.env.CLAUDE_THREADS_FSM_STRICT;
-      process.env.CLAUDE_THREADS_FSM_STRICT = '1';
+      original = process.env.TANDEM_FSM_STRICT;
+      process.env.TANDEM_FSM_STRICT = '1';
     });
 
     afterEach(() => {
       if (original === undefined) {
-        delete process.env.CLAUDE_THREADS_FSM_STRICT;
+        delete process.env.TANDEM_FSM_STRICT;
       } else {
-        process.env.CLAUDE_THREADS_FSM_STRICT = original;
+        process.env.TANDEM_FSM_STRICT = original;
       }
     });
 

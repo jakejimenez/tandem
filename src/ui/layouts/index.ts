@@ -1,5 +1,5 @@
 /**
- * Layout components for the claude-threads UI
+ * Layout components for the tandem UI
  *
  * These components provide the structural foundation for the terminal UI:
  * - RootLayout: Main container with fixed header/footer

@@ -158,7 +158,7 @@ async function showPlatformInstructions(platformType: 'mattermost' | 'slack'): P
       console.log('');
       console.log(dim('  ⚠️  Could not find Slack manifest file.'));
       console.log(dim('  📖 For manual setup instructions:'));
-      console.log(dim('     https://github.com/anneschuth/claude-threads/blob/main/SETUP_GUIDE.md'));
+      console.log(dim('     https://github.com/jakejimenez/tandem/blob/main/SETUP_GUIDE.md'));
       console.log('');
       return;
     }
@@ -213,7 +213,7 @@ async function showPlatformInstructions(platformType: 'mattermost' | 'slack'): P
       }
     } else {
       console.log(dim('  📖 For the full manifest and manual setup instructions:'));
-      console.log(dim('     https://github.com/anneschuth/claude-threads/blob/main/SETUP_GUIDE.md'));
+      console.log(dim('     https://github.com/jakejimenez/tandem/blob/main/SETUP_GUIDE.md'));
     }
     console.log('');
   }
@@ -249,7 +249,7 @@ export function deriveDisplayName(url: string): string {
 
 export async function runOnboarding(reconfigure = false): Promise<void> {
   console.log('');
-  console.log(bold('  claude-threads setup'));
+  console.log(bold('  tandem setup'));
   console.log(dim('  ─────────────────────────────────'));
   console.log('');
 
@@ -272,7 +272,7 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
   }
 
   // First-time setup: show welcome and prerequisites
-  console.log('  Welcome! Let\'s configure claude-threads.');
+  console.log('  Welcome! Let\'s configure tandem.');
   console.log('');
   console.log(dim('  This wizard will guide you through:'));
   console.log(dim('    1. Global settings (working directory, Chrome, git)'));
@@ -310,7 +310,7 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
     console.log(dim('     # Or search common locations:'));
     console.log(dim('     ls ~/.local/bin/claude ~/.bun/bin/claude /usr/local/bin/claude 2>/dev/null'));
     console.log(dim('     # Then run with the path:'));
-    console.log(dim('     CLAUDE_PATH=/path/to/claude claude-threads'));
+    console.log(dim('     CLAUDE_PATH=/path/to/claude tandem'));
     console.log('');
     console.log(dim('  3. Add Claude\'s directory to PATH in your shell config'));
     console.log('');
@@ -354,7 +354,7 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
 
   console.log('');
   console.log(dim('  📖 Need help creating a bot?'));
-  console.log(dim('     ' + 'https://github.com/anneschuth/claude-threads/blob/main/SETUP_GUIDE.md'));
+  console.log(dim('     ' + 'https://github.com/jakejimenez/tandem/blob/main/SETUP_GUIDE.md'));
   console.log(dim('  ⏱️  Estimated time: 10-15 minutes per platform'));
   console.log('');
 
@@ -367,7 +367,7 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
 
   if (!ready) {
     console.log('');
-    console.log(dim('  Setup cancelled. Run `claude-threads` when ready.'));
+    console.log(dim('  Setup cancelled. Run `tandem` when ready.'));
     process.exit(0);
   }
 
@@ -590,7 +590,7 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
   console.log(bold('  🎉 Setup complete!'));
   console.log('');
   console.log(dim('  Next steps:'));
-  console.log(dim('    1. claude-threads will start automatically'));
+  console.log(dim('    1. tandem will start automatically'));
   console.log(dim('    2. In your chat platform, @mention the bot:'));
   console.log(dim('       @botname write "hello world" to test.txt'));
   console.log(dim('    3. The bot will create a thread and stream Claude\'s response'));
@@ -602,12 +602,12 @@ export async function runOnboarding(reconfigure = false): Promise<void> {
   console.log(dim('    !stop              - End session'));
   console.log('');
   console.log(dim('  Troubleshooting:'));
-  console.log(dim('    • Run with debug logs: DEBUG=1 claude-threads'));
-  console.log(dim('    • Reconfigure anytime: claude-threads --setup'));
+  console.log(dim('    • Run with debug logs: DEBUG=1 tandem'));
+  console.log(dim('    • Reconfigure anytime: tandem --setup'));
   console.log(dim('    • Setup guide:'));
-  console.log(dim('      https://github.com/anneschuth/claude-threads/blob/main/SETUP_GUIDE.md'));
+  console.log(dim('      https://github.com/jakejimenez/tandem/blob/main/SETUP_GUIDE.md'));
   console.log('');
-  console.log(dim('  Starting claude-threads...'));
+  console.log(dim('  Starting tandem...'));
   console.log('');
 }
 
@@ -849,7 +849,7 @@ async function runReconfigureFlow(existingConfig: Config): Promise<void> {
   console.log(dim(`    ${CONFIG_PATH}`));
   console.log(dim('    (file permissions set to owner-only for token security)'));
   console.log('');
-  console.log(dim('  Restart claude-threads to apply changes.'));
+  console.log(dim('  Restart tandem to apply changes.'));
   console.log('');
 }
 
@@ -1784,7 +1784,7 @@ async function setupSlackPlatform(
       } else {
         console.log(dim('    • Check network connectivity'));
         console.log(dim('    • Troubleshooting guide:'));
-        console.log(dim('      https://github.com/anneschuth/claude-threads/blob/main/SETUP_GUIDE.md'));
+        console.log(dim('      https://github.com/jakejimenez/tandem/blob/main/SETUP_GUIDE.md'));
       }
       console.log('');
 

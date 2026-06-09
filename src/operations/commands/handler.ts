@@ -949,11 +949,11 @@ export async function updateSessionHeader(
   const statusBar = await buildSessionHeaderStatusBar(session, ctx);
 
   // Update notices ride along regardless of mode — they signal that the user
-  // should run `bun install -g claude-threads` and shouldn't be hidden by a
+  // should run `bun install -g tandem` and shouldn't be hidden by a
   // cosmetic preference.
   const updateInfo = getUpdateInfo();
   const updateNotice = updateInfo
-    ? `> ⚠️ ${formatter.formatBold('Update available:')} v${updateInfo.current} → v${updateInfo.latest} - Run ${formatter.formatCode('bun install -g claude-threads')}\n\n`
+    ? `> ⚠️ ${formatter.formatBold('Update available:')} v${updateInfo.current} → v${updateInfo.latest} - Run ${formatter.formatCode('bun install -g tandem')}\n\n`
     : undefined;
 
   if (session.sessionHeaderMode === 'minimal') {

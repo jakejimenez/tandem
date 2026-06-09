@@ -125,7 +125,7 @@ async function setupOneBot(
     const newBot = await api.createBot({
       username: bot.username,
       display_name: bot.displayName,
-      description: 'Integration test bot for claude-threads',
+      description: 'Integration test bot for tandem',
     });
     bot.userId = newBot.user_id;
     const tokenResponse = await api.createBotAccessToken(newBot.user_id, 'Integration test token');

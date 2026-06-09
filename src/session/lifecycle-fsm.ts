@@ -5,7 +5,7 @@
  * provides a `check()` helper that `transitionTo()` calls before mutating
  * state. By default, illegal transitions are logged at `warn` level with a
  * structured payload — the transition still happens, so this is purely
- * observability. Set `CLAUDE_THREADS_FSM_STRICT=1` to throw instead; useful
+ * observability. Set `TANDEM_FSM_STRICT=1` to throw instead; useful
  * for catching bugs in tests, not recommended for production until we've
  * observed a few weeks of real traffic without warnings.
  *
@@ -126,7 +126,7 @@ const ALLOWED_TRANSITIONS: Record<SessionLifecycleState, ReadonlySet<SessionLife
  * Validate a `from -> to` transition against the FSM.
  *
  * - Legal transition: no-op.
- * - Illegal transition + `CLAUDE_THREADS_FSM_STRICT=1`: throws `Error`.
+ * - Illegal transition + `TANDEM_FSM_STRICT=1`: throws `Error`.
  * - Illegal transition otherwise: logs `warn` with structured payload.
  *
  * The structured log fields are stable (matched by ops tooling): `event`,
@@ -148,7 +148,7 @@ export function checkTransition(
     sessionId,
   };
 
-  if (process.env.CLAUDE_THREADS_FSM_STRICT === '1') {
+  if (process.env.TANDEM_FSM_STRICT === '1') {
     throw new Error(`${msg} (sessionId=${sessionId})`);
   }
 

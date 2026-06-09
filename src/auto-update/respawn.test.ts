@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'bun:test';
 import {
   decideRespawn,
-  resolveClaudeThreadsBin,
+  resolveTandemBin,
   spawnReplacement,
 } from './respawn.js';
 
 describe('auto-update/respawn', () => {
   describe('decideRespawn', () => {
-    it('hands off to bash daemon when CLAUDE_THREADS_BIN is set', () => {
-      const result = decideRespawn({ CLAUDE_THREADS_BIN: '/usr/bin/foo' }, true);
-      expect(result).toEqual({ kind: 'exit-for-supervisor', supervisor: 'claude-threads-daemon' });
+    it('hands off to bash daemon when TANDEM_BIN is set', () => {
+      const result = decideRespawn({ TANDEM_BIN: '/usr/bin/foo' }, true);
+      expect(result).toEqual({ kind: 'exit-for-supervisor', supervisor: 'tandem-daemon' });
     });
 
     it('hands off to pm2 when both pm_id and PM2_HOME are set', () => {
@@ -29,10 +29,10 @@ describe('auto-update/respawn', () => {
       expect(result).toEqual({ kind: 'exit-for-supervisor', supervisor: 'systemd' });
     });
 
-    it('hands off to wrapped-tty when CLAUDE_THREADS_INTERACTIVE is set', () => {
+    it('hands off to wrapped-tty when TANDEM_INTERACTIVE is set', () => {
       // Some external wrapper is managing the TTY for us; let it own the
       // restart so we do not fight it for terminal ownership.
-      const result = decideRespawn({ CLAUDE_THREADS_INTERACTIVE: '1' }, true);
+      const result = decideRespawn({ TANDEM_INTERACTIVE: '1' }, true);
       expect(result).toEqual({ kind: 'exit-for-supervisor', supervisor: 'wrapped-tty' });
     });
 
@@ -47,7 +47,7 @@ describe('auto-update/respawn', () => {
     });
 
     it('prefers bash daemon detection over TTY check', () => {
-      const result = decideRespawn({ CLAUDE_THREADS_BIN: '/x' }, true);
+      const result = decideRespawn({ TANDEM_BIN: '/x' }, true);
       expect(result.kind).toBe('exit-for-supervisor');
     });
 
@@ -60,15 +60,15 @@ describe('auto-update/respawn', () => {
       // All four set: bash daemon wins (closest wrapper).
       const result = decideRespawn(
         {
-          CLAUDE_THREADS_BIN: '/x',
+          TANDEM_BIN: '/x',
           pm_id: '0',
           PM2_HOME: '/p',
           INVOCATION_ID: 'y',
-          CLAUDE_THREADS_INTERACTIVE: '1',
+          TANDEM_INTERACTIVE: '1',
         },
         true
       );
-      expect(result).toEqual({ kind: 'exit-for-supervisor', supervisor: 'claude-threads-daemon' });
+      expect(result).toEqual({ kind: 'exit-for-supervisor', supervisor: 'tandem-daemon' });
     });
 
     it('treats unrelated env vars as no supervisor', () => {
@@ -80,9 +80,9 @@ describe('auto-update/respawn', () => {
     });
   });
 
-  describe('resolveClaudeThreadsBin', () => {
+  describe('resolveTandemBin', () => {
     it('returns null when binary is not on PATH', () => {
-      const result = resolveClaudeThreadsBin(
+      const result = resolveTandemBin(
         { PATH: '/nonexistent-dir' },
         () => false,
         () => false
@@ -91,8 +91,8 @@ describe('auto-update/respawn', () => {
     });
 
     it('returns the resolved path when found in PATH', () => {
-      const fakeBin = '/usr/local/bin/claude-threads';
-      const result = resolveClaudeThreadsBin(
+      const fakeBin = '/usr/local/bin/tandem';
+      const result = resolveTandemBin(
         { PATH: '/usr/local/bin:/usr/bin' },
         (p) => p === fakeBin,
         (p) => p === fakeBin
@@ -102,7 +102,7 @@ describe('auto-update/respawn', () => {
 
     it('skips PATH entries where the file is not executable', () => {
       // Even if the file exists, it must be marked executable.
-      const result = resolveClaudeThreadsBin(
+      const result = resolveTandemBin(
         { PATH: '/usr/local/bin' },
         () => true,
         () => false
@@ -114,8 +114,8 @@ describe('auto-update/respawn', () => {
       // bun installs to ~/.bun/bin which is often missing from cron /
       // systemd PATHs. The resolver should still find it.
       const home = '/home/anne';
-      const bunBin = `${home}/.bun/bin/claude-threads`;
-      const result = resolveClaudeThreadsBin(
+      const bunBin = `${home}/.bun/bin/tandem`;
+      const result = resolveTandemBin(
         { PATH: '/usr/bin', HOME: home },
         (p) => p === bunBin,
         (p) => p === bunBin
@@ -124,8 +124,8 @@ describe('auto-update/respawn', () => {
     });
 
     it('respects BUN_INSTALL override for bun bin location', () => {
-      const customBunBin = '/opt/bun/bin/claude-threads';
-      const result = resolveClaudeThreadsBin(
+      const customBunBin = '/opt/bun/bin/tandem';
+      const result = resolveTandemBin(
         { PATH: '/usr/bin', HOME: '/home/x', BUN_INSTALL: '/opt/bun' },
         (p) => p === customBunBin,
         (p) => p === customBunBin
@@ -137,8 +137,8 @@ describe('auto-update/respawn', () => {
       // Some systemd / launchd setups clear HOME but set BUN_INSTALL
       // explicitly. The resolver should still find the bun-installed
       // binary in that case.
-      const customBunBin = '/opt/bun/bin/claude-threads';
-      const result = resolveClaudeThreadsBin(
+      const customBunBin = '/opt/bun/bin/tandem';
+      const result = resolveTandemBin(
         { PATH: '/usr/bin', BUN_INSTALL: '/opt/bun' },
         (p) => p === customBunBin,
         (p) => p === customBunBin
@@ -147,9 +147,9 @@ describe('auto-update/respawn', () => {
     });
 
     it('returns the first match when multiple PATH entries have the binary', () => {
-      const first = '/usr/local/bin/claude-threads';
-      const second = '/usr/bin/claude-threads';
-      const result = resolveClaudeThreadsBin(
+      const first = '/usr/local/bin/tandem';
+      const second = '/usr/bin/tandem';
+      const result = resolveTandemBin(
         { PATH: '/usr/local/bin:/usr/bin' },
         () => true,
         (p) => p === first || p === second
@@ -158,7 +158,7 @@ describe('auto-update/respawn', () => {
     });
 
     it('handles missing PATH gracefully', () => {
-      const result = resolveClaudeThreadsBin(
+      const result = resolveTandemBin(
         { HOME: '/home/x' },
         () => false,
         () => false

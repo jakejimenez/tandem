@@ -100,7 +100,7 @@ function wirePlatformEvents(
 
 // Define CLI options
 program
-  .name('claude-threads')
+  .name('tandem')
   .version(VERSION)
   .description('Share Claude Code sessions in Mattermost')
   .option('--url <url>', 'Mattermost server URL')
@@ -129,9 +129,9 @@ program
 const opts = program.opts();
 
 // Determine headless mode: explicit flag or auto-detect when no TTY.
-// CLAUDE_THREADS_INTERACTIVE is set by the daemon wrapper to override TTY detection,
+// TANDEM_INTERACTIVE is set by the daemon wrapper to override TTY detection,
 // since background jobs (&) lose TTY assignment even when the parent terminal is interactive.
-const forcedInteractive = !!process.env.CLAUDE_THREADS_INTERACTIVE;
+const forcedInteractive = !!process.env.TANDEM_INTERACTIVE;
 const isHeadless = opts.headless || (!forcedInteractive && (!process.stdout.isTTY || !process.stdin.isTTY));
 
 // Check if required args are provided via CLI
@@ -182,7 +182,7 @@ async function main() {
     // Find the daemon wrapper script
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
-    const daemonPath = resolve(__dirname, '..', 'bin', 'claude-threads-daemon');
+    const daemonPath = resolve(__dirname, '..', 'bin', 'tandem-daemon');
 
     // Remove auto-restart flags and add --no-auto-restart to prevent infinite loop
     const args = process.argv.slice(2)
@@ -205,11 +205,11 @@ async function main() {
         stdio: 'inherit',
         env: {
           ...process.env,
-          CLAUDE_THREADS_BIN: binPath,
-          // Clear CLAUDE_THREADS_INTERACTIVE so the daemon subprocess detects
+          TANDEM_BIN: binPath,
+          // Clear TANDEM_INTERACTIVE so the daemon subprocess detects
           // its own TTY state. The daemon runs with piped stdio (no TTY), so
           // forwarding the parent's TTY state would cause InkProvider to crash.
-          CLAUDE_THREADS_INTERACTIVE: '',
+          TANDEM_INTERACTIVE: '',
         },
       });
     } else {
@@ -217,8 +217,8 @@ async function main() {
         stdio: 'inherit',
         env: {
           ...process.env,
-          CLAUDE_THREADS_BIN: binPath,
-          CLAUDE_THREADS_INTERACTIVE: '',
+          TANDEM_BIN: binPath,
+          TANDEM_INTERACTIVE: '',
         },
       });
     }

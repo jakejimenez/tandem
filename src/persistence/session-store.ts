@@ -109,7 +109,7 @@ interface SessionStoreData {
 }
 
 const STORE_VERSION = 2; // v2: Added platformId for multi-platform support
-const DEFAULT_CONFIG_DIR = join(homedir(), '.config', 'claude-threads');
+const DEFAULT_CONFIG_DIR = join(homedir(), '.config', 'tandem');
 const DEFAULT_SESSIONS_FILE = join(DEFAULT_CONFIG_DIR, 'sessions.json');
 
 /**
@@ -122,12 +122,12 @@ export class SessionStore {
 
   /**
    * Create a SessionStore instance
-   * @param sessionsPath - Custom path for sessions.json (default: ~/.config/claude-threads/sessions.json)
-   *                       Can also be set via CLAUDE_THREADS_SESSIONS_PATH environment variable.
+   * @param sessionsPath - Custom path for sessions.json (default: ~/.config/tandem/sessions.json)
+   *                       Can also be set via TANDEM_SESSIONS_PATH environment variable.
    *                       Useful for testing to isolate session state between test files.
    */
   constructor(sessionsPath?: string) {
-    const envPath = process.env.CLAUDE_THREADS_SESSIONS_PATH;
+    const envPath = process.env.TANDEM_SESSIONS_PATH;
     const effectivePath = sessionsPath ?? envPath;
 
     if (effectivePath) {

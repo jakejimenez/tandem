@@ -1,6 +1,6 @@
 # Configuration Reference
 
-Configuration is stored at `~/.config/claude-threads/config.yaml`.
+Configuration is stored at `~/.config/tandem/config.yaml`.
 
 ## Full Example
 
@@ -147,7 +147,7 @@ Export either with a different value in the bot's own env to disable.
 CLI options override config file settings:
 
 ```bash
-claude-threads [options]
+tandem [options]
 
 Options:
   --url <url>              Mattermost server URL
@@ -170,7 +170,7 @@ Options:
 
 ## Session Persistence
 
-Active sessions are saved to `~/.config/claude-threads/sessions.json` and automatically resume after bot restarts.
+Active sessions are saved to `~/.config/tandem/sessions.json` and automatically resume after bot restarts.
 
 ## Keep-Alive
 

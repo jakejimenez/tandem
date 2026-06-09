@@ -1,5 +1,5 @@
 /**
- * RootLayout - Main layout container for the claude-threads UI
+ * RootLayout - Main layout container for the tandem UI
  *
  * Provides a fixed header/footer with flexible middle content area.
  * Structure:

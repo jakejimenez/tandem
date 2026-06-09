@@ -120,9 +120,9 @@ export interface ClaudeCliOptions {
   /**
    * Username of the user who started this session. Forwarded to the MCP
    * child as `SESSION_OWNER_USERNAME` and used by `send_dm` for the
-   * attribution prefix recipients see ("via claude-threads, on behalf
+   * attribution prefix recipients see ("via tandem, on behalf
    * of @anne"). Optional: when omitted the prefix degrades to "via
-   * claude-threads from another channel."
+   * tandem from another channel."
    */
   sessionOwnerUsername?: string;
   /**
@@ -232,7 +232,7 @@ export function materializeMcpConfig(
     return { mode: 'inline', value: JSON.stringify(config) };
   }
   const dir = opts.tmpDirOverride ?? tmpdir();
-  const path = join(dir, `claude-threads-mcp-${sessionId ?? process.pid}-${Date.now()}.json`);
+  const path = join(dir, `tandem-mcp-${sessionId ?? process.pid}-${Date.now()}.json`);
   writeFileSync(path, JSON.stringify(config), { mode: 0o600 });
   return { mode: 'file', path };
 }
@@ -537,7 +537,7 @@ export class ClaudeCli extends EventEmitter {
     // Configure status line to write context data to a temp file
     // This gives us accurate context window usage information
     if (this.options.sessionId) {
-      this.statusFilePath = join(tmpdir(), `claude-threads-status-${this.options.sessionId}.json`);
+      this.statusFilePath = join(tmpdir(), `tandem-status-${this.options.sessionId}.json`);
       const statusLineWriterPath = this.getStatusLineWriterPath();
       const statusLineSettings = {
         statusLine: {

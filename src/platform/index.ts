@@ -2,7 +2,7 @@
  * Platform abstraction layer
  *
  * This module provides platform-agnostic interfaces and types that allow
- * claude-threads to work with multiple chat platforms (Mattermost, Slack, etc.)
+ * tandem to work with multiple chat platforms (Mattermost, Slack, etc.)
  * without coupling the core logic to any specific platform.
  */
 

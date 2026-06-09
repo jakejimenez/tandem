@@ -23,7 +23,7 @@ describe('saveConfig', () => {
 
   beforeEach(() => {
     // Create a unique test directory path (don't create it yet - saveConfig should do that)
-    testDir = join(tmpdir(), `claude-threads-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    testDir = join(tmpdir(), `tandem-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     testConfigPath = join(testDir, 'config.yaml');
   });
 
@@ -208,7 +208,7 @@ describe('CONFIG_PATH', () => {
     expect(CONFIG_PATH).toBeDefined();
     expect(CONFIG_PATH).toContain('config.yaml');
     expect(CONFIG_PATH).toContain('.config');
-    expect(CONFIG_PATH).toContain('claude-threads');
+    expect(CONFIG_PATH).toContain('tandem');
   });
 });
 

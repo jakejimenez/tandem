@@ -14,7 +14,7 @@ import {
 } from './installer.js';
 import { UPDATE_STATE_FILENAME, type PersistedUpdateState } from './types.js';
 
-const STATE_PATH = resolve(homedir(), '.config', 'claude-threads', UPDATE_STATE_FILENAME);
+const STATE_PATH = resolve(homedir(), '.config', 'tandem', UPDATE_STATE_FILENAME);
 
 describe('auto-update/installer', () => {
   // Backup and restore state file around tests
@@ -219,7 +219,7 @@ describe('auto-update/installer', () => {
       // Uses whatever package manager is detected (bun preferred)
       const pm = detectPackageManager();
       const expectedCmd = pm?.isBun ? 'bun' : 'npm';
-      expect(instructions).toContain(`${expectedCmd} install -g claude-threads@1.0.0`);
+      expect(instructions).toContain(`${expectedCmd} install -g tandem@1.0.0`);
     });
   });
 

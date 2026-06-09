@@ -12,7 +12,7 @@ const mockFindWorktreeByBranch = mock(() => Promise.resolve(null as { path: stri
 const mockCreateWorktree = mock(() => Promise.resolve());
 const mockGetWorktreeDir = mock(() => '/repo-worktrees/feature-branch');
 const mockRemoveWorktree = mock(() => Promise.resolve());
-const mockIsValidWorktreePath = mock((path: string) => path.includes('/.claude-threads/worktrees/'));
+const mockIsValidWorktreePath = mock((path: string) => path.includes('/.local/share/tandem/worktrees/'));
 const mockWriteWorktreeMetadata = mock(() => Promise.resolve());
 
 mock.module('../../git/worktree.js', () => ({
@@ -778,7 +778,7 @@ describe('Worktree Module', () => {
     beforeEach(() => {
       // Reset the isValidWorktreePath mock to a reasonable default
       mockIsValidWorktreePath.mockReset();
-      mockIsValidWorktreePath.mockImplementation((path: string) => path.includes('/.claude-threads/worktrees/'));
+      mockIsValidWorktreePath.mockImplementation((path: string) => path.includes('/.local/share/tandem/worktrees/'));
     });
 
     it('succeeds when session has no worktree', async () => {
@@ -793,7 +793,7 @@ describe('Worktree Module', () => {
 
     it('skips cleanup when session is not worktree owner', async () => {
       const session = createMockSession({
-        worktreeInfo: { repoRoot: '/repo', worktreePath: '/home/user/.claude-threads/worktrees/repo-wt', branch: 'feature' },
+        worktreeInfo: { repoRoot: '/repo', worktreePath: '/home/user/.local/share/tandem/worktrees/repo-wt', branch: 'feature' },
         isWorktreeOwner: false,
       });
 
@@ -808,7 +808,7 @@ describe('Worktree Module', () => {
       mockIsValidWorktreePath.mockReturnValue(true);
 
       const session = createMockSession({
-        worktreeInfo: { repoRoot: '/repo', worktreePath: '/home/user/.claude-threads/worktrees/repo-wt', branch: 'feature' },
+        worktreeInfo: { repoRoot: '/repo', worktreePath: '/home/user/.local/share/tandem/worktrees/repo-wt', branch: 'feature' },
         isWorktreeOwner: true,
       });
 
@@ -917,7 +917,7 @@ describe('Worktree Module', () => {
   describe('cleanupWorktreeCommand', () => {
     beforeEach(() => {
       mockIsValidWorktreePath.mockReset();
-      mockIsValidWorktreePath.mockImplementation((path: string) => path.includes('/.claude-threads/worktrees/'));
+      mockIsValidWorktreePath.mockImplementation((path: string) => path.includes('/.local/share/tandem/worktrees/'));
       mockRemoveWorktree.mockReset();
       mockRemoveWorktree.mockResolvedValue(undefined);
     });
@@ -928,7 +928,7 @@ describe('Worktree Module', () => {
       const session = createMockSession({
         worktreeInfo: {
           repoRoot: '/original/repo',
-          worktreePath: '/home/user/.claude-threads/worktrees/repo-wt',
+          worktreePath: '/home/user/.local/share/tandem/worktrees/repo-wt',
           branch: 'feature',
         },
         isWorktreeOwner: true,
@@ -979,7 +979,7 @@ describe('Worktree Module', () => {
       const session = createMockSession({
         worktreeInfo: {
           repoRoot: '/repo',
-          worktreePath: '/home/user/.claude-threads/worktrees/repo-wt',
+          worktreePath: '/home/user/.local/share/tandem/worktrees/repo-wt',
           branch: 'feature',
         },
         isWorktreeOwner: true,

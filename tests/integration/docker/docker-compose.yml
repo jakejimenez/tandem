@@ -7,7 +7,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: claude-threads-test-postgres
+    container_name: tandem-test-postgres
     environment:
       POSTGRES_USER: mmuser
       POSTGRES_PASSWORD: mmuser_password
@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - claude-threads-test
+      - tandem-test
     # Use tmpfs for faster tests (data not persisted)
     tmpfs:
       - /var/lib/postgresql/data
@@ -30,7 +30,7 @@ services:
     # Match the CI image (.github/workflows/integration.yml) — both must be on
     # a release that includes the MM-39713 thread-write race fix (>= 9.5).
     image: ${MATTERMOST_IMAGE:-ghcr.io/supersunho/docker-mattermost/mattermost:v11.0.4-team-arm64}
-    container_name: claude-threads-test-mattermost
+    container_name: tandem-test-mattermost
     depends_on:
       postgres:
         condition: service_healthy
@@ -77,12 +77,12 @@ services:
       retries: 30
       start_period: 30s
     networks:
-      - claude-threads-test
+      - tandem-test
     # Use tmpfs for logs and data for faster tests
     tmpfs:
       - /mattermost/logs
       - /mattermost/data
 
 networks:
-  claude-threads-test:
+  tandem-test:
     driver: bridge

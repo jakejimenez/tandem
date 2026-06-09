@@ -16,7 +16,7 @@ import { UPDATE_STATE_FILENAME } from './types.js';
 const log = createLogger('installer');
 
 /**
- * Detect which package manager originally installed claude-threads.
+ * Detect which package manager originally installed tandem.
  * This ensures updates use the same package manager to avoid duplicate installations.
  *
  * Detection order:
@@ -77,7 +77,7 @@ function normalizePath(p: string): string {
 }
 
 /**
- * Detect which package manager originally installed claude-threads
+ * Detect which package manager originally installed tandem
  * by checking the location of the running binary.
  */
 export function detectOriginalInstaller(): 'bun' | 'npm' | null {
@@ -116,10 +116,10 @@ export function detectOriginalInstaller(): 'bun' | 'npm' | null {
 }
 
 // State file path
-const STATE_PATH = resolve(homedir(), '.config', 'claude-threads', UPDATE_STATE_FILENAME);
+const STATE_PATH = resolve(homedir(), '.config', 'tandem', UPDATE_STATE_FILENAME);
 
 // Package name
-const PACKAGE_NAME = 'claude-threads';
+const PACKAGE_NAME = 'tandem';
 
 /**
  * Load persisted update state from disk.

@@ -201,7 +201,7 @@ export class CleanupScheduler {
 
   /**
    * Clean up orphaned worktrees.
-   * Orphan = worktree in ~/.claude-threads/worktrees/ with no active session using it,
+   * Orphan = worktree in ~/.local/share/tandem/worktrees/ with no active session using it,
    * and either older than 24 hours or its branch was merged.
    */
   private async cleanupOrphanedWorktrees(): Promise<{ cleaned: number; metadata: number }> {

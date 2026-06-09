@@ -1,4 +1,4 @@
-# Claude Code Instructions for claude-threads
+# Claude Code Instructions for tandem
 
 ## What This Project Does
 
@@ -88,7 +88,7 @@ This is a multi-platform bot that lets users interact with Claude Code through c
 
 ## Multi-Platform Support
 
-**Architecture**: claude-threads supports connecting to multiple chat platforms simultaneously through a platform abstraction layer.
+**Architecture**: tandem supports connecting to multiple chat platforms simultaneously through a platform abstraction layer.
 
 **Currently Supported**:
 - ✅ Mattermost (fully implemented)
@@ -103,7 +103,7 @@ This is a multi-platform bot that lets users interact with Claude Code through c
 
 **Configuration**:
 
-Multi-platform mode uses YAML config (`~/.config/claude-threads/config.yaml`):
+Multi-platform mode uses YAML config (`~/.config/tandem/config.yaml`):
 
 ```yaml
 version: 1
@@ -315,8 +315,8 @@ Each executor owns a specific piece of interactive state:
 1. **Claude CLI is started with:**
    ```
    claude --input-format stream-json --output-format stream-json --verbose \
-     --mcp-config '{"mcpServers":{"claude-threads-mcp":{...}}}' \
-     --permission-prompt-tool mcp__claude-threads-mcp__permission_prompt
+     --mcp-config '{"mcpServers":{"tandem-mcp":{...}}}' \
+     --permission-prompt-tool mcp__tandem-mcp__permission_prompt
    ```
 
 2. **When Claude needs permission** (e.g., to write a file), it calls the MCP tool
@@ -338,7 +338,7 @@ Each executor owns a specific piece of interactive state:
 
 ## Configuration
 
-Configuration is stored in YAML at `~/.config/claude-threads/config.yaml`.
+Configuration is stored in YAML at `~/.config/tandem/config.yaml`.
 
 **First run:** If no config exists, interactive onboarding guides you through setup.
 
@@ -387,7 +387,7 @@ CHANGELOG.
 
 ### Claude CLI Version Requirements
 
-claude-threads requires a compatible version of the Claude CLI (`@anthropic-ai/claude-code`).
+tandem requires a compatible version of the Claude CLI (`@anthropic-ai/claude-code`).
 
 **Compatible versions:** `>=2.0.74 <2.2.0` (covers the full 2.1.x line; latest verified: 2.1.116)
 
@@ -446,7 +446,7 @@ bun run test:integration
 
 ## Testing Locally
 
-1. Create config: `~/.config/claude-threads/config.yaml` (or run `claude-threads` for interactive setup)
+1. Create config: `~/.config/tandem/config.yaml` (or run `tandem` for interactive setup)
 2. Build: `bun run build`
 3. Run: `bun start` (or `DEBUG=1 bun start` for verbose output)
 4. In Mattermost, @mention the bot: `@botname write "hello" to test.txt`
@@ -539,7 +539,7 @@ gh release create vX.Y.Z --title "vX.Y.Z" --generate-notes
 
 **Token Setup (already configured):**
 - Classic Automation token stored in GitHub repository secrets as `NPM_TOKEN`
-- To update: https://github.com/anneschuth/claude-threads/settings/secrets/actions
+- To update: https://github.com/jakejimenez/tandem/settings/secrets/actions
 
 ## Testing Deployed Versions in Mattermost
 
@@ -577,16 +577,16 @@ When testing a specific fix:
 
 ## Data Retention & Security
 
-claude-threads stores sensitive session data locally. The following retention policies and security measures apply:
+tandem stores sensitive session data locally. The following retention policies and security measures apply:
 
 ### Data Storage Locations
 
 | Data | Location | Retention | Permissions |
 |------|----------|-----------|-------------|
-| Session state | `~/.config/claude-threads/sessions.json` | Active + 3 days after soft-delete | `0600` (owner only) |
-| Thread logs | `~/.claude-threads/logs/{platformId}/` | 30 days (configurable) | `0600` (owner only) |
-| Worktree metadata | `~/.claude-threads/worktrees.json` | Until worktree cleanup | `0600` (owner only) |
-| Configuration | `~/.config/claude-threads/config.yaml` | Permanent | `0600` (owner only) |
+| Session state | `~/.config/tandem/sessions.json` | Active + 3 days after soft-delete | `0600` (owner only) |
+| Thread logs | `~/.tandem/logs/{platformId}/` | 30 days (configurable) | `0600` (owner only) |
+| Worktree metadata | `~/.tandem/worktrees.json` | Until worktree cleanup | `0600` (owner only) |
+| Configuration | `~/.config/tandem/config.yaml` | Permanent | `0600` (owner only) |
 
 ### Automatic Cleanup
 
@@ -765,8 +765,8 @@ bun test
 
 ### Files That Store Persisted Data
 
-- `~/.config/claude-threads/sessions.json` - Session state (`PersistedSession` interface)
-- `~/.config/claude-threads/config.yaml` - Bot configuration
+- `~/.config/tandem/sessions.json` - Session state (`PersistedSession` interface)
+- `~/.config/tandem/config.yaml` - Bot configuration
 
 ## Future Improvements to Consider
 

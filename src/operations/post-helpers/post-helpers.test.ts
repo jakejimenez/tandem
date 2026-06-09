@@ -268,7 +268,7 @@ describe('resetSessionActivity', () => {
       sessionOverrides: {
         worktreeInfo: {
           repoRoot: '/home/user/repo',
-          worktreePath: '/home/user/.claude-threads/worktrees/repo--feature-abc123',
+          worktreePath: '/home/user/.local/share/tandem/worktrees/repo--feature-abc123',
           branch: 'feature',
         },
       },

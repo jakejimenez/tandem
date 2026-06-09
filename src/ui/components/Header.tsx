@@ -28,7 +28,7 @@ export function Header({ version, workingDir, claudeVersion }: HeaderProps) {
         <Text> </Text>
         <Text color="yellow">✴</Text>
         <Text>   </Text>
-        <Text bold>claude-threads</Text>
+        <Text bold>tandem</Text>
         <Text dimColor> v{version}</Text>
       </Text>
       {/* Line 2: Logo + tagline */}

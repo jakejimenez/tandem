@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Status line writer for claude-threads
+ * Status line writer for tandem
  *
  * This script is called by Claude Code's status line feature.
  * It receives JSON data via stdin containing context window usage,
- * writes it to a file for claude-threads to read, and outputs
+ * writes it to a file for tandem to read, and outputs
  * a minimal status line (or empty string to not affect user's status line).
  *
- * The file is written to <os.tmpdir()>/claude-threads-status-<session-id>.json
+ * The file is written to <os.tmpdir()>/tandem-status-<session-id>.json
  *
  * Usage (configured in Claude Code settings):
  *   statusLine: {
@@ -64,7 +64,7 @@ process.stdin.on('end', () => {
       };
 
       // Write to temp file
-      const filePath = join(tmpdir(), `claude-threads-status-${sessionId}.json`);
+      const filePath = join(tmpdir(), `tandem-status-${sessionId}.json`);
       mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, JSON.stringify(output, null, 2));
     }

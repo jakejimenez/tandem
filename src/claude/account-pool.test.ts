@@ -118,7 +118,7 @@ describe('AccountPool', () => {
   });
 
   describe('sticky-by-thread binding', () => {
-    // Regression: in claude-threads <=1.8.2 the pool was strictly round-robin,
+    // Regression: in tandem <=1.8.2 the pool was strictly round-robin,
     // and the claudeAccountId persisted to sessions.json could drift away from
     // the $HOME Claude actually spawned under (race between multiple acquires
     // and the writeAtomic of the whole sessions map). After a bot restart that

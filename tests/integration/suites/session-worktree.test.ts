@@ -34,7 +34,7 @@ const SKIP = !process.env.INTEGRATION_TEST;
 const TEST_PLATFORMS = (process.env.TEST_PLATFORMS || 'mattermost').split(',') as PlatformType[];
 
 // Temp directory for test git repos
-const TEST_REPO_BASE = '/tmp/claude-threads-worktree-test';
+const TEST_REPO_BASE = '/tmp/tandem-worktree-test';
 
 /**
  * Create a temp git repo with initial commit

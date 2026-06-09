@@ -928,9 +928,9 @@ describe('Utility Functions', () => {
       expect(result).toBe('[feature-branch]/src/file.ts');
     });
 
-    it('shortens long worktree paths from ~/.claude-threads/worktrees/', () => {
-      // This tests the actual format of worktree directories created by claude-threads
-      const worktreePath = '/Users/anneschuth/.claude-threads/worktrees/Users-anneschuth-claude-threads--refactor-platform-abstraction-layer-c7287c11';
+    it('shortens long worktree paths from ~/.local/share/tandem/worktrees/', () => {
+      // This tests the actual format of worktree directories created by tandem
+      const worktreePath = '/Users/anneschuth/.local/share/tandem/worktrees/Users-anneschuth-claude-threads--refactor-platform-abstraction-layer-c7287c11';
       const filePath = `${worktreePath}/src/operations/tool-formatters/file.ts`;
 
       const result = shortenPath(filePath, undefined, {
@@ -942,7 +942,7 @@ describe('Utility Functions', () => {
     });
 
     it('shortens exact worktree path match', () => {
-      const worktreePath = '/Users/anneschuth/.claude-threads/worktrees/Users-anneschuth-claude-threads--branch-abc12345';
+      const worktreePath = '/Users/anneschuth/.local/share/tandem/worktrees/Users-anneschuth-claude-threads--branch-abc12345';
 
       const result = shortenPath(worktreePath, undefined, {
         path: worktreePath,

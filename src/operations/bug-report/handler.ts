@@ -187,7 +187,7 @@ export interface BugReportContext {
 const MAX_RECENT_EVENTS = 10;
 
 /** GitHub repository for bug reports */
-const GITHUB_REPO = 'anneschuth/claude-threads';
+const GITHUB_REPO = 'jakejimenez/tandem';
 
 // =============================================================================
 // Event Tracking
@@ -582,7 +582,7 @@ export function formatIssueBody(
 
 | Property | Value |
 |----------|-------|
-| claude-threads | v${context.version} |
+| tandem | v${context.version} |
 | Claude CLI | ${context.claudeCliVersion || 'unknown'} |
 | Platform | ${context.platformType} (${context.platform}) |
 | Node.js | ${context.nodeVersion} |
@@ -642,7 +642,7 @@ ${sanitizeText(context.errorContext.message)}
   }
 
   // Footer
-  sections.push('---\n_Reported via claude-threads bug report feature_');
+  sections.push('---\n_Reported via tandem bug report feature_');
 
   return sections.join('\n\n');
 }
@@ -765,7 +765,7 @@ export function formatBugPreview(
   lines.push(formatter.formatBlockquote(description));
   lines.push('');
   lines.push(formatter.formatBold('Environment:'));
-  lines.push(formatter.formatListItem(`claude-threads v${context.version}`));
+  lines.push(formatter.formatListItem(`tandem v${context.version}`));
   lines.push(formatter.formatListItem(`Claude CLI ${context.claudeCliVersion || 'unknown'}`));
   lines.push(formatter.formatListItem(`Platform: ${context.platformType}`));
   lines.push(formatter.formatListItem(`Branch: ${context.branch || 'N/A'}`));

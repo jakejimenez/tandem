@@ -16,7 +16,7 @@
  *   - ✅ (white_check_mark) Allow all future tool uses in this session
  *   - 👎 (-1) Deny this tool use
  *
- * Environment variables (passed by claude-threads):
+ * Environment variables (passed by tandem):
  *   - PLATFORM_TYPE: Platform type ('mattermost' or 'slack')
  *   - PLATFORM_URL: Platform server URL
  *   - PLATFORM_TOKEN: Bot access token
@@ -152,7 +152,7 @@ let allowAllSession = false;
 // send_dm state.
 //
 // All three pieces are scoped to the lifetime of this MCP child (= one
-// claude-threads session). They reset implicitly when the session ends
+// tandem session). They reset implicitly when the session ends
 // because the MCP child exits with it. Persisting across sessions would
 // be the wrong default — a session boundary is a meaningful "fresh start"
 // for the user's intent.

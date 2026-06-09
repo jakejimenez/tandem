@@ -66,7 +66,7 @@ function createMockPlatform(downloadResult: Buffer = Buffer.from('test content')
 let uploadDir: string;
 
 beforeEach(async () => {
-  uploadDir = await mkdtemp(join(tmpdir(), 'claude-threads-test-'));
+  uploadDir = await mkdtemp(join(tmpdir(), 'tandem-test-'));
 });
 
 afterEach(async () => {
@@ -96,9 +96,9 @@ describe('getSessionUploadDir', () => {
     const tmp = tmpdir();
     const escape = getSessionUploadDir('../../etc', '../../passwd');
     // Must still be a single segment under the uploads root.
-    expect(escape.startsWith(join(tmp, 'claude-threads-uploads') + '/')).toBe(true);
+    expect(escape.startsWith(join(tmp, 'tandem-uploads') + '/')).toBe(true);
     // After the uploads-root prefix, no further '/' segments allowed.
-    const tail = escape.slice(join(tmp, 'claude-threads-uploads').length + 1);
+    const tail = escape.slice(join(tmp, 'tandem-uploads').length + 1);
     expect(tail.includes('/')).toBe(false);
   });
 });
@@ -299,7 +299,7 @@ describe('saveFilesToUploadDir', () => {
     if (process.platform === 'win32') return;
     const { symlink } = await import('fs/promises');
     // Replace the test's uploadDir with a symlink pointing elsewhere.
-    const realTarget = await mkdtemp(join(tmpdir(), 'claude-threads-real-'));
+    const realTarget = await mkdtemp(join(tmpdir(), 'tandem-real-'));
     await rm(uploadDir, { recursive: true, force: true });
     await symlink(realTarget, uploadDir);
 

@@ -56,7 +56,7 @@ function isUnderRoot(needle: string, root: string): boolean {
  *
  * Note: a session whose working dir is e.g. `/home/anne/proj` is fine —
  * only the root itself triggers. Per-session upload dirs sit under
- * `/tmp/claude-threads-uploads/<id>/...` which is several segments deeper
+ * `/tmp/tandem-uploads/<id>/...` which is several segments deeper
  * than `/tmp` and so passes.
  */
 const DANGEROUSLY_WIDE_ROOTS = new Set([

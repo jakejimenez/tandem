@@ -8,7 +8,7 @@
  * GitHub designed it to keep the real email private while still letting
  * commits be matched to the account.
  *
- * Storage: YAML at ~/.config/claude-threads/github-emails.yaml, 0600.
+ * Storage: YAML at ~/.config/tandem/github-emails.yaml, 0600.
  * Shape: `{ <platformId>: { <username>: <noreplyEmail> } }`.
  *
  * Per-platform scope: a username on `mattermost-main` and the same string on
@@ -23,7 +23,7 @@ import { createLogger } from '../utils/logger.js';
 
 const log = createLogger('gh-emails');
 
-const DEFAULT_CONFIG_DIR = join(homedir(), '.config', 'claude-threads');
+const DEFAULT_CONFIG_DIR = join(homedir(), '.config', 'tandem');
 const DEFAULT_FILE = join(DEFAULT_CONFIG_DIR, 'github-emails.yaml');
 
 /**
@@ -54,7 +54,7 @@ export class GitHubEmailsStore {
   private readonly configDir: string;
 
   constructor(filePath?: string) {
-    const envPath = process.env.CLAUDE_THREADS_GITHUB_EMAILS_PATH;
+    const envPath = process.env.TANDEM_GITHUB_EMAILS_PATH;
     const effective = filePath ?? envPath;
 
     if (effective) {

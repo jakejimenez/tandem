@@ -21,7 +21,7 @@ import type {
   AutoUpdateEvents,
 } from './types.js';
 import { RESTART_EXIT_CODE, mergeAutoUpdateConfig } from './types.js';
-import { decideRespawn, resolveClaudeThreadsBin, spawnReplacement } from './respawn.js';
+import { decideRespawn, resolveTandemBin, spawnReplacement } from './respawn.js';
 import type { PlatformFormatter } from '../platform/formatter.js';
 
 /** Message builder function that takes a formatter and returns the formatted message */
@@ -275,7 +275,7 @@ export class AutoUpdateManager extends EventEmitter {
       // if we know we can't deliver it (e.g. self-respawn case where the
       // binary isn't on PATH).
       const decision = decideRespawn();
-      const binPath = decision.kind === 'self-respawn' ? resolveClaudeThreadsBin() : null;
+      const binPath = decision.kind === 'self-respawn' ? resolveTandemBin() : null;
       const canSelfRespawn = decision.kind === 'self-respawn' && binPath !== null;
       const willAutoRestart =
         decision.kind === 'exit-for-supervisor'
@@ -283,7 +283,7 @@ export class AutoUpdateManager extends EventEmitter {
           : canSelfRespawn;
 
       // Tailored success message. If we know auto-restart isn't going to
-      // happen, tell the user to run claude-threads themselves rather
+      // happen, tell the user to run tandem themselves rather
       // than implying sessions will come back on their own.
       if (willAutoRestart) {
         await this.callbacks.broadcastUpdate((fmt) =>
@@ -291,7 +291,7 @@ export class AutoUpdateManager extends EventEmitter {
         ).catch(() => {});
       } else {
         await this.callbacks.broadcastUpdate((fmt) =>
-          `✅ ${fmt.formatBold('Update installed')} to v${updateInfo.latestVersion}. Could not auto-restart (no supervisor and no claude-threads on PATH); please run ${fmt.formatCode('claude-threads')} to bring the bot back. Sessions are persisted and will resume.`
+          `✅ ${fmt.formatBold('Update installed')} to v${updateInfo.latestVersion}. Could not auto-restart (no supervisor and no tandem on PATH); please run ${fmt.formatCode('tandem')} to bring the bot back. Sessions are persisted and will resume.`
         ).catch(() => {});
       }
 
@@ -307,7 +307,7 @@ export class AutoUpdateManager extends EventEmitter {
         const reason = err instanceof Error ? err.message : String(err);
         log.error(`prepareForRestart failed: ${reason}`);
         await this.callbacks.broadcastUpdate((fmt) =>
-          `⚠️ ${fmt.formatBold('Restart aborted')}: shutdown sequence failed (${reason}). Sessions may be in an inconsistent state; please run ${fmt.formatCode('claude-threads')} manually.`
+          `⚠️ ${fmt.formatBold('Restart aborted')}: shutdown sequence failed (${reason}). Sessions may be in an inconsistent state; please run ${fmt.formatCode('tandem')} manually.`
         ).catch(() => {});
         process.exit(1);
       }
@@ -338,12 +338,12 @@ export class AutoUpdateManager extends EventEmitter {
           // them now that they need to restart by hand.
           log.error('Self-respawn launch failed after binary resolution succeeded');
           await this.callbacks.broadcastUpdate((fmt) =>
-            `⚠️ ${fmt.formatBold('Auto-restart failed')} after install: please run ${fmt.formatCode('claude-threads')} to bring the bot back. Sessions are persisted and will resume.`
+            `⚠️ ${fmt.formatBold('Auto-restart failed')} after install: please run ${fmt.formatCode('tandem')} to bring the bot back. Sessions are persisted and will resume.`
           ).catch(() => {});
         } else {
           // No binary on PATH; the user already got the matching
           // manual-restart message in the !willAutoRestart branch above.
-          log.error('claude-threads not found on PATH; manual restart required');
+          log.error('tandem not found on PATH; manual restart required');
         }
         // No supervisor to fall back to: exit 0 cleanly. Exit 42 here
         // would mean "ask my parent to restart me", but our parent is

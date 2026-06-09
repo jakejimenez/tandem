@@ -420,7 +420,7 @@ async function buildStatusBar(
     }
   }
 
-  // Version (CT = claude-threads, CC = Claude Code)
+  // Version (CT = tandem, CC = Claude Code)
   items.push(formatter.formatCode(formatVersionString()));
 
   // Session count
@@ -619,7 +619,7 @@ export async function buildStickyMessage(
     appendFooter(lines, config);
 
     lines.push('');
-    lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g claude-threads')} · ${formatter.formatLink('claude-threads.run', 'https://claude-threads.run/')}`);
+    lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g tandem')} · ${formatter.formatLink('tandem.run', 'https://tandem.run/')}`);
 
     return lines.join('\n');
   }
@@ -724,7 +724,7 @@ export async function buildStickyMessage(
   appendFooter(lines, config);
 
   lines.push('');
-  lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g claude-threads')} · ${formatter.formatLink('claude-threads.run', 'https://claude-threads.run/')}`);
+  lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g tandem')} · ${formatter.formatLink('tandem.run', 'https://tandem.run/')}`);
 
   return lines.join('\n');
 }

@@ -22,7 +22,7 @@ const log = createLogger('streaming');
 // Constants
 // ---------------------------------------------------------------------------
 
-const UPLOAD_ROOT_DIR = 'claude-threads-uploads';
+const UPLOAD_ROOT_DIR = 'tandem-uploads';
 
 // ---------------------------------------------------------------------------
 // Types

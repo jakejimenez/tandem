@@ -76,7 +76,7 @@ const handleReleaseNotes: CommandHandler = async (ctx) => {
     await ctx.client.createPost(formatReleaseNotes(notes, ctx.formatter), ctx.threadId);
   } else {
     await ctx.client.createPost(
-      `📋 ${ctx.formatter.formatBold(`claude-threads v${VERSION}`)}\n\nRelease notes not available. See ${ctx.formatter.formatLink('GitHub releases', 'https://github.com/anneschuth/claude-threads/releases')}.`,
+      `📋 ${ctx.formatter.formatBold(`tandem v${VERSION}`)}\n\nRelease notes not available. See ${ctx.formatter.formatLink('GitHub releases', 'https://github.com/jakejimenez/tandem/releases')}.`,
       ctx.threadId
     );
   }

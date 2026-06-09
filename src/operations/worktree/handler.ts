@@ -95,7 +95,7 @@ export function parseWorktreeError(error: unknown): { summary: string; suggestio
   if (lowerMessage.includes('permission denied') || lowerMessage.includes('access denied')) {
     return {
       summary: 'Permission denied when creating worktree directory',
-      suggestion: 'Check file system permissions for ~/.claude-threads/worktrees/',
+      suggestion: 'Check file system permissions for ~/.local/share/tandem/worktrees/',
     };
   }
 
@@ -1038,9 +1038,9 @@ export async function cleanupWorktreeCommand(
 
   const { worktreePath, repoRoot, branch } = session.worktreeInfo;
 
-  // Path safety check - must be in ~/.claude-threads/worktrees/
+  // Path safety check - must be in ~/.local/share/tandem/worktrees/
   if (!isValidWorktreePath(worktreePath)) {
-    await postError(session, `Cannot cleanup: worktree is not in the centralized location (~/.claude-threads/worktrees/)`);
+    await postError(session, `Cannot cleanup: worktree is not in the centralized location (~/.local/share/tandem/worktrees/)`);
     sessionLog(session).warn(`🌿 Invalid worktree path for cleanup: ${worktreePath}`);
     return;
   }
@@ -1106,7 +1106,7 @@ async function cleanupWorktree(
 
   const { worktreePath, repoRoot } = session.worktreeInfo;
 
-  // Path safety check - must be in ~/.claude-threads/worktrees/
+  // Path safety check - must be in ~/.local/share/tandem/worktrees/
   if (!isValidWorktreePath(worktreePath)) {
     sessionLog(session).warn(`Invalid worktree path, skipping cleanup: ${worktreePath}`);
     return { success: false, error: 'Invalid path pattern - not in centralized worktrees directory' };

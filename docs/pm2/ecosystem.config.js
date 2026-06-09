@@ -1,5 +1,5 @@
 /**
- * PM2 ecosystem configuration for claude-threads
+ * PM2 ecosystem configuration for tandem
  *
  * Installation:
  *   1. Copy this file to your deployment directory
@@ -15,13 +15,13 @@
 module.exports = {
   apps: [
     {
-      name: 'claude-threads',
+      name: 'tandem',
 
       // Use the daemon wrapper for update restarts
-      script: 'claude-threads-daemon',
+      script: 'tandem-daemon',
 
-      // Alternative: Run claude-threads directly (no update restarts)
-      // script: 'claude-threads',
+      // Alternative: Run tandem directly (no update restarts)
+      // script: 'tandem',
 
       // Working directory
       cwd: '/home/your-username/projects',
@@ -48,14 +48,14 @@ module.exports = {
 
       // Logging
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
-      error_file: '/var/log/pm2/claude-threads-error.log',
-      out_file: '/var/log/pm2/claude-threads-out.log',
+      error_file: '/var/log/pm2/tandem-error.log',
+      out_file: '/var/log/pm2/tandem-out.log',
       merge_logs: true,
 
       // Resource limits
       max_memory_restart: '500M',
 
-      // Instance settings (keep at 1 for claude-threads)
+      // Instance settings (keep at 1 for tandem)
       instances: 1,
       exec_mode: 'fork',
     },

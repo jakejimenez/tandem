@@ -1757,8 +1757,8 @@ describe('handleMessage', () => {
       expect(client.createPost).toHaveBeenCalled();
       // The post should contain version info (either formatted release notes or fallback message)
       const postContent = (client.createPost as any).mock.calls[0][0];
-      // Either contains "Release Notes" (formatted) or "claude-threads" (fallback)
-      expect(postContent.includes('Release Notes') || postContent.includes('claude-threads')).toBe(true);
+      // Either contains "Release Notes" (formatted) or "tandem" (fallback)
+      expect(postContent.includes('Release Notes') || postContent.includes('tandem')).toBe(true);
     });
 
     test('handles !changelog alias', async () => {

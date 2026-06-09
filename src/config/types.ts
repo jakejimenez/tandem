@@ -1,5 +1,5 @@
 /**
- * Configuration type definitions for claude-threads
+ * Configuration type definitions for tandem
  */
 
 import type { AutoUpdateConfig, AutoRestartMode, ScheduledWindow } from '../auto-update/types.js';

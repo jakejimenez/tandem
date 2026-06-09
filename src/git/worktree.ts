@@ -8,7 +8,7 @@ import { createLogger } from '../utils/logger.js';
 const log = createLogger('git-wt');
 
 /** Centralized worktree location for easy cleanup */
-const WORKTREES_DIR = path.join(homedir(), '.claude-threads', 'worktrees');
+const WORKTREES_DIR = path.join(homedir(), '.local', 'share', 'tandem','worktrees');
 
 /**
  * Metadata stored alongside each worktree for cleanup tracking
@@ -257,7 +257,7 @@ async function branchExists(repoRoot: string, branch: string): Promise<boolean> 
 
 /**
  * Generate the worktree directory path.
- * Creates worktrees in centralized location: ~/.claude-threads/worktrees/{encoded-repo}--{branch}-{uuid}
+ * Creates worktrees in centralized location: ~/.local/share/tandem/worktrees/{encoded-repo}--{branch}-{uuid}
  * This makes it easy to find and clean up orphaned worktrees.
  */
 export function getWorktreeDir(repoRoot: string, branch: string): string {
@@ -279,7 +279,7 @@ export function getWorktreeDir(repoRoot: string, branch: string): string {
  * Used to prevent accidentally deleting worktrees outside our control.
  */
 export function isValidWorktreePath(worktreePath: string): boolean {
-  // Must be inside ~/.claude-threads/worktrees/
+  // Must be inside ~/.local/share/tandem/worktrees/
   return worktreePath.startsWith(WORKTREES_DIR + path.sep);
 }
 
@@ -300,7 +300,7 @@ export function getWorktreesDir(): string {
 export async function detectWorktreeInfo(
   workingDir: string
 ): Promise<{ worktreePath: string; branch: string; repoRoot: string } | null> {
-  // Must be inside ~/.claude-threads/worktrees/
+  // Must be inside ~/.local/share/tandem/worktrees/
   if (!isValidWorktreePath(workingDir)) {
     return null;
   }
@@ -447,13 +447,13 @@ export function isValidBranchName(name: string): boolean {
 
 /**
  * Centralized metadata store for all worktrees.
- * Stored in ~/.claude-threads/worktree-metadata.json to avoid polluting project directories.
+ * Stored in ~/.local/share/tandem/worktree-metadata.json to avoid polluting project directories.
  */
 interface WorktreeMetadataStore {
   [worktreePath: string]: WorktreeMetadata;
 }
 
-const METADATA_STORE_PATH = path.join(homedir(), '.claude-threads', 'worktree-metadata.json');
+const METADATA_STORE_PATH = path.join(homedir(), '.local', 'share', 'tandem','worktree-metadata.json');
 
 /**
  * Read the entire metadata store from disk.

@@ -1,7 +1,7 @@
 /**
  * Connection tests for platform WebSocket and REST API
  *
- * Tests basic connectivity without requiring the full claude-threads bot.
+ * Tests basic connectivity without requiring the full tandem bot.
  * Uses direct API access to verify platforms are properly configured.
  *
  * Parameterized to run against both Mattermost and Slack platforms.

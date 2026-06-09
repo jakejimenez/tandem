@@ -415,7 +415,7 @@ describe('MessageManager', () => {
   describe('Worktree Path Shortening', () => {
     it('shortens file paths in tool output when worktree info is set', async () => {
       // Create a new manager with worktree info
-      const worktreePath = '/home/testuser/.claude-threads/worktrees/testuser-myrepo--feature-branch-abc12345';
+      const worktreePath = '/home/testuser/.local/share/tandem/worktrees/testuser-myrepo--feature-branch-abc12345';
       const newPostTracker = new PostTracker();
       const managerWithWorktree = new MessageManager({
         session,
@@ -454,7 +454,7 @@ describe('MessageManager', () => {
 
     it('shortens paths after setWorktreeInfo is called', async () => {
       // Create a manager WITHOUT worktree info initially
-      const worktreePath = '/home/testuser/.claude-threads/worktrees/testuser-myrepo--feature-branch-abc12345';
+      const worktreePath = '/home/testuser/.local/share/tandem/worktrees/testuser-myrepo--feature-branch-abc12345';
       const newPostTracker = new PostTracker();
       const managerNoWorktree = new MessageManager({
         session,
@@ -494,7 +494,7 @@ describe('MessageManager', () => {
     it('uses ~ fallback when worktree info is not set', async () => {
       // Use the home dir that will be used for ~ substitution
       const home = process.env.HOME || '/home/user';
-      const filePath = `${home}/.claude-threads/worktrees/some-repo--some-branch/src/index.ts`;
+      const filePath = `${home}/.local/share/tandem/worktrees/some-repo--some-branch/src/index.ts`;
 
       // The default manager has no worktree info
       const event = {
@@ -513,7 +513,7 @@ describe('MessageManager', () => {
 
       // Should use ~ fallback instead of [branch]
       const postContent = manager.getCurrentPostContent();
-      expect(postContent).toContain('~/.claude-threads');
+      expect(postContent).toContain('~/.local');
       expect(postContent).not.toContain('[');
     });
   });

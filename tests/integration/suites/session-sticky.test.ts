@@ -26,7 +26,7 @@ const SKIP = !process.env.INTEGRATION_TEST;
 // Determine which platforms to test based on environment
 const TEST_PLATFORMS = (process.env.TEST_PLATFORMS || 'mattermost').split(',') as PlatformType[];
 
-const STICKY_REGEX = /claude-threads|Claude.*Threads|Active.*Claude/i;
+const STICKY_REGEX = /tandem|Claude.*Threads|Active.*Claude/i;
 
 /**
  * Poll for the sticky message to appear in channel posts.

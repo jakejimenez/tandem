@@ -58,7 +58,7 @@ export class HeadlessProvider implements UIProvider {
 
   async start(): Promise<void> {
     const { config } = this.options;
-    this.log('HeadlessProvider', `claude-threads v${config.version} starting in headless mode`);
+    this.log('HeadlessProvider', `tandem v${config.version} starting in headless mode`);
     this.log('HeadlessProvider', `Working directory: ${config.workingDir}`);
     this.log('HeadlessProvider', `Claude CLI: ${config.claudeVersion}`);
   }
