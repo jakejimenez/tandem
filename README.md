@@ -1,8 +1,8 @@
 # Tandem
 
 ```
- ✴ ███ ✴
-✴   █   ✴  tandem
+ ✴ ███ ✴   tandem
+✴   █   ✴  Slack & Mattermost × AI coding agents
  ✴  █  ✴
 ```
 
