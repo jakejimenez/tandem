@@ -26,6 +26,7 @@ settings:
   event_subscriptions:
     bot_events:
       - message.channels
+      - message.groups
       - reaction_added
       - reaction_removed
   interactivity:
