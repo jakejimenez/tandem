@@ -168,7 +168,7 @@ export async function detectHarnesses(): Promise<HarnessInfo[]> {
 /**
  * Return the default harness type to use when none is explicitly configured.
  */
-export async function getDefaultHarness(): Promise<HarnessType> {
+async function getDefaultHarness(): Promise<HarnessType> {
   return 'claude-code';
 }
 

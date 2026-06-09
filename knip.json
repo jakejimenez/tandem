@@ -9,9 +9,11 @@
   ],
   "project": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts"],
   "ignore": [
-    "src/test-utils/**/*"
+    "src/test-utils/**/*",
+    "src/harness/index.ts",
+    "src/permissions/index.ts"
   ],
   "ignoreDependencies": ["prettier", "hono", "@hono/node-server", "express-rate-limit"],
-  "ignoreBinaries": ["pkill", "sleep", "prettier", "knip", "dist/index.js"],
+  "ignoreBinaries": ["pkill", "sleep", "prettier", "knip", "dist/index.js", "codex", "opencode", "pi", "gh", "caffeinate", "systemd-inhibit", "powershell"],
   "ignoreExportsUsedInFile": true
 }

@@ -6,9 +6,9 @@
  */
 
 export type { Capabilities, HarnessType, HarnessInfo, HarnessProcess } from './adapter.js';
-export { detectHarnesses, getDefaultHarness, createHarness } from './registry.js';
+export { detectHarnesses, createHarness } from './registry.js';
 export type { HarnessCreateOptions } from './registry.js';
 export { CodexCli, CODEX_CAPABILITIES } from './codex/index.js';
 export { PiCli, PI_CAPABILITIES } from './pi/index.js';
 export { OpenCodeCli, OPENCODE_CAPABILITIES } from './opencode/index.js';
-export { getUserHarnessPreference, setUserHarnessPreference, clearUserHarnessPreference } from './prefs.js';
+export { getUserHarnessPreference, setUserHarnessPreference } from './prefs.js';
