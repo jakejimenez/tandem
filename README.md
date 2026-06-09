@@ -1,10 +1,56 @@
 # Tandem
 
-> Screen-sharing for AI pair programming, but everyone can type. Supports Claude Code, OpenCode, Pi, and Codex.
+> Screen-sharing for AI pair programming, but everyone can type.
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-**Bring your AI coding harness to your team.** Run Claude Code, OpenCode, Pi, or Codex on your machine, share it live in Mattermost or Slack. Colleagues can watch, collaborate, and run their own sessions—all from chat.
+**Bring your AI coding harness to your team.** Run Claude Code, OpenCode, Pi, or Codex on your machine, share it live in Mattermost or Slack. Colleagues can watch, collaborate, and run their own sessions — all from chat.
+
+## Supported Harnesses
+
+| Harness | Install | Interactive Approval | Plan Approval |
+|---|---|---|---|
+| Claude Code | `npm i -g @anthropic-ai/claude-code` | ✅ | ✅ |
+| OpenCode | `npm i -g opencode-ai` | ✅ | — |
+| Pi | `npm i -g @earendil-works/pi-coding-agent` | — | — |
+| Codex CLI | `npm i -g @openai/codex` | — (sandbox) | — |
+
+## Supported Platforms
+
+| Platform | Status |
+|---|---|
+| Slack | ✅ v1 |
+| Mattermost | ✅ inherited from fork |
+| Discord | Roadmap |
+| Teams | Roadmap |
+
+## Quickstart
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jakejimenez/tandem/main/install.sh | bash
+tandem   # runs setup wizard
+# In Slack: @tandem fix the auth bug
+```
+
+The setup wizard walks through harness selection, platform credentials, and permission mode. The single binary embeds the Bun runtime — no separate Bun install required on target machines.
+
+## Multi-User Channel Mode
+
+Each user who mentions `@tandem` in a channel gets their own private thread. Nobody sees another user's output unless they click into that thread. Sessions are isolated — different users can run different harnesses in the same channel simultaneously.
+
+- `@tandem sessions` — list active sessions (admin only)
+- `!admin` prefix — admin-only commands for session management
+
+When capacity is full, incoming requests queue in FIFO order with a configurable timeout rather than being dropped.
+
+## Known Parity Gaps vs claude-threads
+
+- Mattermost support is inherited from the fork but has not been tested end-to-end with the new harness adapters.
+- Fleet/Parallel Mode (running multiple harnesses in one session) is roadmap.
+
+## CJIS Posture
+
+Agent output never leaves the machine except to the configured chat platform (Slack or Mattermost). The single binary embeds the Bun runtime, so there is no external runtime dependency to audit.
 
 ---
 
