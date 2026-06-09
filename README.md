@@ -1,184 +1,153 @@
 # Tandem
 
-> Screen-sharing for AI pair programming, but everyone can type.
+```
+ ✴ ▄█▀ ███ ✴   tandem
+✴  █▀   █   ✴  Slack & Mattermost × AI coding agents
+ ✴ ▀█▄  █  ✴
+```
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![CI](https://github.com/jakejimenez/tandem/actions/workflows/release.yml/badge.svg)](https://github.com/jakejimenez/tandem/actions)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jakejimenez/tandem/pulls)
 
-**Bring your AI coding harness to your team.** Run Claude Code, OpenCode, Pi, or Codex on your machine, share it live in Mattermost or Slack. Colleagues can watch, collaborate, and run their own sessions — all from chat.
+**Bring your AI coding agent to your team.** Run Claude Code, OpenCode, Pi, or Codex on your machine and share it live in Slack or Mattermost. Colleagues can watch, collaborate, and run their own sessions — all from chat.
+
+> _Screen-sharing for AI pair programming, but everyone can type._
+
+## Features
+
+- **Multi-harness** — supports Claude Code, OpenCode, Pi, and Codex CLI. Switch with `!harness <type>` or set a per-user default with `!harness use <type>`
+- **Real-time streaming** — agent responses stream live into the chat thread as they're generated
+- **Multi-platform** — connect to multiple Slack and Mattermost workspaces simultaneously
+- **Concurrent sessions** — each thread gets its own isolated agent session, persisted across bot restarts
+- **Permission modes** — three-way control over tool use: `default` (every action prompts for 👍/✅/👎), `auto` (classifier auto-approves low-risk; high-risk still prompts — recommended), or `bypass` (no prompts). Set via config, CLI flag, or `!permissions default|auto|bypass` in-session
+- **Plan approval** — when the agent presents a plan, react 👍 to start or 👎 to request changes (Claude Code)
+- **Multiple choice** — react 1️⃣ 2️⃣ 3️⃣ 4️⃣ to answer agent questions (Claude Code)
+- **Sticky to-do lists** — agent task lists update live at the bottom of each thread (Claude Code)
+- **Collaboration** — `!invite @user` to let teammates participate; they get added as `Co-Authored-By:` trailers on commits
+- **File attachments** — drop images, PDFs, archives, or source files into the chat; agent reads them from disk (100 MB cap)
+- **Files back to chat** — agent posts screenshots, PDFs, plots, and audio directly into the thread via the `send_file` tool
+- **Permalink following** — paste a Slack or Mattermost link; the agent resolves it to the post body via `read_post`
+- **Git worktrees** — isolate agent changes in a branch with `!worktree <branch>`
+- **Multi-User Channel Mode** — each user who mentions `@tandem` gets their own private thread with their own agent session; no output leaks between users
+- **Concurrency queue** — when at capacity, incoming requests queue in FIFO order rather than being dropped, with configurable timeout and per-user limits
+- **Admin commands** — `!admin sessions`, `!admin kill`, `!admin queue`, `!admin capacity` for ops oversight
+- **Multi-account / multi-key** — round-robin across multiple API keys with automatic rate-limit cooldown
+- **Chrome automation** — optional Claude Code + Chrome integration for web tasks
+- **Auto-update** — bot checks for new versions and offers to restart; `!update now` / `!update defer` controls timing
+- **Single binary** — ships as a self-contained executable (`bun build --compile`); no separate runtime to install on target machines
 
 ## Supported Harnesses
 
-| Harness | Install | Interactive Approval | Plan Approval |
-|---|---|---|---|
-| Claude Code | `npm i -g @anthropic-ai/claude-code` | ✅ | ✅ |
-| OpenCode | `npm i -g opencode-ai` | ✅ | — |
-| Pi | `npm i -g @earendil-works/pi-coding-agent` | — | — |
-| Codex CLI | `npm i -g @openai/codex` | — (sandbox) | — |
+| Harness | Install | Interactive approval | Plan approval | Sticky todos |
+|---|---|:---:|:---:|:---:|
+| **Claude Code** | `npm i -g @anthropic-ai/claude-code` | ✅ | ✅ | ✅ |
+| **OpenCode** | `npm i -g opencode-ai` | ✅ | — | — |
+| **Pi** | `npm i -g @earendil-works/pi-coding-agent` | — | — | — |
+| **Codex CLI** | `npm i -g @openai/codex` | — (sandbox) | — | — |
 
 ## Supported Platforms
 
 | Platform | Status |
 |---|---|
-| Slack | ✅ v1 |
-| Mattermost | ✅ inherited from fork |
+| **Slack** | ✅ |
+| **Mattermost** | ✅ |
 | Discord | Roadmap |
 | Teams | Roadmap |
 
-## Quickstart
+## Quick Start
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jakejimenez/tandem/main/install.sh | bash
-tandem   # runs setup wizard
-# In Slack: @tandem fix the auth bug
-```
-
-The setup wizard walks through harness selection, platform credentials, and permission mode. The single binary embeds the Bun runtime — no separate Bun install required on target machines.
-
-## Multi-User Channel Mode
-
-Each user who mentions `@tandem` in a channel gets their own private thread. Nobody sees another user's output unless they click into that thread. Sessions are isolated — different users can run different harnesses in the same channel simultaneously.
-
-- `@tandem sessions` — list active sessions (admin only)
-- `!admin` prefix — admin-only commands for session management
-
-When capacity is full, incoming requests queue in FIFO order with a configurable timeout rather than being dropped.
-
-## Known Parity Gaps vs claude-threads
-
-- Mattermost support is inherited from the fork but has not been tested end-to-end with the new harness adapters.
-- Fleet/Parallel Mode (running multiple harnesses in one session) is roadmap.
-
-## CJIS Posture
-
-Agent output never leaves the machine except to the configured chat platform (Slack or Mattermost). The single binary embeds the Bun runtime, so there is no external runtime dependency to audit.
-
----
-
-> **Attribution:** Tandem is a fork of [anneschuth/claude-threads](https://github.com/anneschuth/claude-threads) (Apache-2.0), created by Anne Schuth. The original project description follows below.
-
----
-
-## Original: claude-threads
-
-```
- ✴ ▄█▀ ███ ✴   claude-threads
-✴  █▀   █   ✴  Mattermost & Slack × Claude Code
- ✴ ▀█▄  █  ✴
-```
-
-<p align="center">
-  <a href="https://claude-threads.run"><strong>claude-threads.run</strong></a>
-</p>
-
-[![npm version](https://img.shields.io/npm/v/claude-threads.svg)](https://www.npmjs.com/package/claude-threads)
-[![npm downloads](https://img.shields.io/npm/dm/claude-threads.svg)](https://www.npmjs.com/package/claude-threads)
-[![CI](https://github.com/anneschuth/claude-threads/actions/workflows/ci.yml/badge.svg)](https://github.com/anneschuth/claude-threads/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/anneschuth/4951f9235658e276208942986092e5ab/raw/coverage-badge.json)](https://github.com/anneschuth/claude-threads/actions/workflows/ci.yml)
-[![Node](https://img.shields.io/node/v/claude-threads.svg)](https://nodejs.org/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/anneschuth/claude-threads/pulls)
-
-**Bring Claude Code to your team.** Run Claude Code on your machine, share it live in Mattermost or Slack. Colleagues can watch, collaborate, and run their own sessions—all from chat.
-
-> _Think of it as screen-sharing for AI pair programming, but everyone can type._
-
-## Features
-
-- **Real-time streaming** - Claude's responses stream live to chat
-- **Multi-platform** - Connect to multiple Mattermost and Slack workspaces simultaneously
-- **Concurrent sessions** - Each thread gets its own Claude session, persisted across bot restarts
-- **Collaboration** - `!invite` teammates to participate; they get added as `Co-Authored-By:` trailers on Claude's commits
-- **Permission modes** - Three-way control over Claude's tool-use: `default` (every action prompts for 👍/✅/👎 approval via emoji), `auto` (Claude's classifier auto-approves low-risk; high-risk still prompts — recommended), or `bypass` (no prompts, all tools allowed). Set via config, `--permission-mode` CLI flag, or in-session with `!permissions default|auto|bypass`.
-- **Claude posts back to chat** - Claude can call `send_file` to drop screenshots, generated PDFs, plots, or audio directly into the thread, and `read_post` to follow a Mattermost or Slack permalink the user shares
-- **Git worktrees** - Isolate Claude's changes in a branch with `!worktree feature/foo`; supports `list`, `switch`, `remove`, `cleanup`, `off`
-- **File attachments** - Drop images, PDFs, archives, or any file into the chat; Claude reads them from disk via its own `Read`/Bash tools (100 MB cap)
-- **Chrome automation** - Optional integration with Claude in Chrome for web tasks
-- **Multi-account Claude (opt-in)** - Round-robin sessions across multiple Claude subscriptions or API keys with automatic rate-limit cooldown — see [Configuration](docs/CONFIGURATION.md#claude-accounts-optional-multi-account-mode)
-- **Auto-update** - Bot checks npm for new versions and offers to restart; `!update now` / `!update defer` controls the timing
-
-## Quick Start
-
-### Install & Run
-
-```bash
-# Install (pick one)
-bun install -g claude-threads   # with Bun (recommended)
-npm install -g claude-threads   # with Node
-
-# Run the setup wizard
 cd /your/project
-claude-threads
+tandem
 ```
 
-The **interactive setup wizard** will guide you through everything:
+The **interactive setup wizard** guides you through:
 
-- Configure Claude Code CLI (if needed)
-- Set up your Mattermost or Slack bot
-- Test credentials and permissions
-- Get you up and running in minutes
+1. Detecting installed harnesses and picking your default
+2. Configuring your Slack or Mattermost bot credentials
+3. Setting a permission mode
+4. Testing and saving the configuration
 
-**Need help with platform setup?** See the [Setup Guide](SETUP_GUIDE.md) for Mattermost or Slack bot creation.
+**Prerequisites:** at least one harness CLI installed and working (e.g. `claude --version`).
 
-### Prerequisites
-
-- **Bun 1.2.21+** or **Node 20+** - [Install Bun](https://bun.sh/) or [Install Node](https://nodejs.org/)
-- **Claude Code CLI working** - test with `claude --version` (needs API key or subscription)
+See [SETUP_GUIDE.md](SETUP_GUIDE.md) for step-by-step Slack and Mattermost bot creation.
 
 ### Use
 
-Mention the bot in your chat:
+Mention the bot in any channel:
 
 ```
-@claude help me fix the bug in src/auth.ts
+@tandem fix the bug in src/auth.ts
 ```
+
+Tandem starts a session in a thread, streams the agent's work live, and waits for your reactions.
 
 ## Session Commands
 
 Type `!help` in any session thread:
 
-| Command                                     | Description                                                                              |
-| :------------------------------------------ | :--------------------------------------------------------------------------------------- |
-| `!help`                                     | Show available commands                                                                  |
-| `!release-notes`                            | Show what changed in the running version                                                 |
-| `!context`                                  | Show context usage                                                                       |
-| `!cost`                                     | Show token usage and cost                                                                |
-| `!compact`                                  | Compress context to free up space                                                        |
-| `!cd <path>`                                | Change working directory (restarts Claude)                                               |
-| `!permissions <mode>`                       | Set permission mode: `default` / `auto` / `bypass`                                       |
-| `!mentions [on\|off]`                       | Quiet mode: only respond when @mentioned (bare `!mentions` toggles)                      |
-| `!worktree <branch>`                        | Create and switch to a git worktree (also: `list`, `switch`, `remove`, `cleanup`, `off`) |
-| `!plugin <list\|install\|uninstall> [name]` | Manage Claude Code plugins (restarts Claude)                                             |
-| `!invite @user`                             | Invite a user to this session (added as `Co-Authored-By:` on commits)                    |
-| `!kick @user`                               | Remove an invited user                                                                   |
-| `!github-email <email>`                     | Register your GitHub noreply email so `!invite` can attribute commits to you             |
-| `!update`                                   | Show auto-update status (`!update now` / `!update defer`)                                |
-| `!bug <desc>`                               | Report a bug with context (creates a GitHub issue)                                       |
-| `!approve`                                  | Approve pending plan (alternative to 👍 reaction)                                        |
-| `!escape`                                   | Interrupt current task (session stays active)                                            |
-| `!stop`                                     | Stop this session                                                                        |
-| `!kill`                                     | Emergency shutdown (kills ALL sessions and exits the bot)                                |
+| Command | Description |
+|:---|:---|
+| `!help` | Show available commands |
+| `!release-notes` | Show what changed in the running version |
+| `!context` | Show context window usage |
+| `!cost` | Show token usage and cost |
+| `!compact` | Compress context to free up space (Claude Code) |
+| `!cd <path>` | Change working directory (restarts agent) |
+| `!permissions <mode>` | Set permission mode: `default` / `auto` / `bypass` |
+| `!mentions [on\|off]` | Quiet mode: only respond when @mentioned |
+| `!worktree <branch>` | Create and switch to a git worktree (also: `list`, `switch`, `remove`, `cleanup`, `off`) |
+| `!plugin <list\|install\|uninstall> [name]` | Manage Claude Code plugins |
+| `!harness <type\|list>` | Switch harness (starts a new session) or list detected harnesses |
+| `!harness use <type>` | Set your personal default harness |
+| `!invite @user` | Invite a user to this session (added as `Co-Authored-By:` on commits) |
+| `!kick @user` | Remove an invited user |
+| `!github-email <email>` | Register your GitHub noreply email for commit attribution |
+| `!update` | Show auto-update status (`!update now` / `!update defer`) |
+| `!bug <desc>` | Report a bug with context |
+| `!approve` | Approve a pending plan (alternative to 👍 reaction) |
+| `!escape` | Interrupt the current task (session stays active) |
+| `!stop` | Stop this session |
+| `!kill` | Emergency shutdown (kills all sessions and exits the bot) |
+
+### Multi-User / Admin Commands
+
+| Command | Description |
+|:---|:---|
+| `@tandem sessions` | List your active sessions |
+| `!admin sessions` | List all active sessions (admin only) |
+| `!admin kill <threadId>` | Kill a specific session (admin only) |
+| `!admin queue` | Show the current wait queue (admin only) |
+| `!admin capacity` | Show active/max sessions (admin only) |
 
 ## Interactive Controls
 
-**Permission approval** - When Claude wants to execute a tool:
-
+**Permission approval** — when the agent wants to use a tool:
 - 👍 Allow this action
-- ✅ Allow all future actions
+- ✅ Allow all future actions this session
 - 👎 Deny
 
-**Plan approval** - When Claude creates a plan:
-
+**Plan approval** — when the agent presents a plan (Claude Code):
 - 👍 Approve and start
 - 👎 Request changes
 
-**Questions** - React with 1️⃣ 2️⃣ 3️⃣ 4️⃣ to answer multiple choice
+**Multiple choice** — react 1️⃣ 2️⃣ 3️⃣ 4️⃣ to answer agent questions (Claude Code)
 
-**Session control** - ⏸️ to interrupt, ❌ or 🛑 to stop, ↩️ to resume a timed-out session
+**Session control** — ⏸️ interrupt · ❌ or 🛑 stop · ↩️ resume a timed-out session
+
+## Multi-User Channel Mode
+
+Each user who mentions `@tandem` gets their own thread and their own isolated agent session. No one else's output appears in your thread unless you share it.
+
+When the server is at capacity, requests queue in FIFO order rather than being rejected. Admins can configure `maxConcurrent` and `maxPerUser` per channel, and use `!admin` commands to monitor and manage sessions.
 
 ## File Attachments
 
-Drop any file into the chat (image, PDF, archive, source, log, you name it). The bot saves it to a per-thread directory and prepends the path to your message; Claude reads it with its own `Read` tool (full multimodal for images and PDFs) or processes it via Bash. Single 100 MB cap per file. Need to extract a zip? Claude runs `unzip` itself.
+Drop any file into the thread — image, PDF, archive, source file, log. The bot saves it to a per-thread directory and prepends the path to your message so the agent can read it. Full multimodal support for images and PDFs (100 MB cap). Archives are extracted by the agent itself.
 
-Going the other way, Claude can post files back into the thread (screenshots, generated PDFs, plots, MP3s) by calling the `send_file` MCP tool. Path is validated against the session working directory; auto-approved so the user doesn't have to 👍 every screenshot.
+Going the other way, agents post files back into the thread (screenshots, generated PDFs, plots, audio) by calling the `send_file` tool.
 
 ## Collaboration
 
@@ -187,43 +156,40 @@ Going the other way, Claude can post files back into the thread (screenshots, ge
 !kick @colleague      # Remove access
 ```
 
-Unauthorized users can request message approval from the session owner with a 👍 reaction.
-
-Invited collaborators are added as `Co-Authored-By:` trailers on any commits Claude makes during the session. Each collaborator runs `!github-email <their-noreply-address>` once (find yours at <https://github.com/settings/emails>) and the bot remembers it across sessions.
-
-## Sharing Links With Claude
-
-Paste a Mattermost or Slack permalink in the thread and Claude can resolve it to the post body (and optional thread context) via the `read_post` MCP tool, instead of asking you to copy-paste. Auto-approved; scoped to channels the bot can already see.
+Invited collaborators are added as `Co-Authored-By:` trailers on any commits the agent makes. Each collaborator runs `!github-email <their-noreply-address>` once and the bot remembers it across sessions.
 
 ## Git Worktrees
 
-Keep your main branch clean while Claude works on features:
+Keep your main branch clean while the agent works:
 
 ```
-@claude on branch feature/add-auth implement user authentication
+@tandem on branch feature/add-auth implement user authentication
 ```
 
 Or mid-session: `!worktree feature/add-auth`
 
 ## Access Control
 
-Restrict who can use the bot during setup (or reconfigure later with `claude-threads --setup`).
+Restrict who can start sessions during setup, or reconfigure with `tandem --setup`. Leave the allowed-users list empty to let anyone in the channel use the bot.
 
-Leave the allowed users list empty to let anyone in the channel use the bot (be careful!)
+Channel-level config supports per-channel harness allowlists, permission modes, concurrency limits, and admin lists.
 
 ## Documentation
 
-- **[Setup Guide](SETUP_GUIDE.md)** - Step-by-step setup for Mattermost and Slack
-- **[Configuration Reference](CLAUDE.md)** - Technical details and architecture
+- **[Setup Guide](SETUP_GUIDE.md)** — Slack and Mattermost bot creation
+- **[Configuration Reference](docs/CONFIGURATION.md)** — full config schema
+- **[AGENTS.md](AGENTS.md)** — architecture guide for contributors and AI agents
 
 ## Updates
 
 ```bash
-npm install -g claude-threads
+bun install -g tandem   # or: npm install -g tandem
 ```
 
-The bot checks for updates automatically and notifies you when new versions are available.
+The bot checks for updates automatically and notifies you when a new version is available.
 
 ## License
 
-Apache-2.0
+Apache-2.0 — see [LICENSE](LICENSE).
+
+Built on [claude-threads](https://github.com/anneschuth/claude-threads) by Anne Schuth (Apache-2.0).
