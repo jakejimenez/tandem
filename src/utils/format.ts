@@ -107,7 +107,7 @@ export function formatRelativeTimeShort(date: Date): string {
  */
 export function formatVersionString(): string {
   const claudeVersion = getClaudeCliVersion().version;
-  return claudeVersion ? `CT v${VERSION} · CC v${claudeVersion}` : `CT v${VERSION}`;
+  return claudeVersion ? `T v${VERSION} · CC v${claudeVersion}` : `T v${VERSION}`;
 }
 
 // =============================================================================

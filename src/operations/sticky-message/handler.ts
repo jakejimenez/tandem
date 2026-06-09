@@ -590,7 +590,7 @@ export async function buildStickyMessage(
       formatter.formatHorizontalRule(),
       statusBar,
       '',
-      formatter.formatBold('Active Claude Threads'),
+      formatter.formatBold('Active Tandem Threads'),
       '',
     ];
 
@@ -619,7 +619,7 @@ export async function buildStickyMessage(
     appendFooter(lines, config);
 
     lines.push('');
-    lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g tandem')} · ${formatter.formatLink('tandem.run', 'https://tandem.run/')}`);
+    lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g tandem')}`);
 
     return lines.join('\n');
   }
@@ -632,7 +632,7 @@ export async function buildStickyMessage(
     formatter.formatHorizontalRule(),
     statusBar,
     '',
-    formatter.formatBold(`Active Claude Threads (${totalCount})`),
+    formatter.formatBold(`Active Tandem Threads (${totalCount})`),
     '',
   ];
 
@@ -724,7 +724,7 @@ export async function buildStickyMessage(
   appendFooter(lines, config);
 
   lines.push('');
-  lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g tandem')} · ${formatter.formatLink('tandem.run', 'https://tandem.run/')}`);
+  lines.push(`${formatter.formatItalic('Mention me to start a session')} · ${formatter.formatCode('bun install -g tandem')}`);
 
   return lines.join('\n');
 }
