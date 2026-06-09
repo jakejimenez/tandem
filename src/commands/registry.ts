@@ -295,6 +295,24 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
 
   // ---------------------------------------------------------------------------
+  // Admin Commands (Multi-User Channel Mode)
+  // ---------------------------------------------------------------------------
+  {
+    command: 'admin',
+    description: 'Admin commands for multi-user channel mode (admins only)',
+    args: 'sessions | kill <threadId> | queue | capacity',
+    category: 'system',
+    audience: 'user',
+    claudeNotes: 'Admin-only commands, not for general use',
+    subcommands: [
+      { name: 'sessions', description: 'List all active sessions' },
+      { name: 'kill', description: 'Kill a session by threadId', args: '<threadId>' },
+      { name: 'queue', description: 'Show the concurrency queue' },
+      { name: 'capacity', description: 'Show active/max capacity' },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
   // Claude Code Passthrough (hidden from help, used in system prompt)
   // ---------------------------------------------------------------------------
   {

@@ -17,6 +17,17 @@ import type {
 import { generateHelpMessage } from './help-generator.js';
 import { getReleaseNotes, formatReleaseNotes } from '../changelog.js';
 import { VERSION } from '../version.js';
+import {
+  handleAdminSessions,
+  handleAdminKill,
+  handleAdminQueue,
+  handleAdminCapacity,
+  ConcurrencyQueue,
+} from '../multiuser/index.js';
+
+// Module-level concurrency queue (in-memory, v1).
+// TODO: per-channel queues driven by ChannelConfig.maxConcurrent.
+const globalQueue = new ConcurrencyQueue(/* maxConcurrent */ 5, /* timeoutMs */ 5 * 60 * 1000);
 
 // =============================================================================
 // Command Handler Registry
@@ -499,6 +510,69 @@ const handleHarness: CommandHandler = async (ctx, args) => {
 };
 
 /**
+ * Handle !admin command.
+ *
+ * Subcommands: sessions | kill <threadId> | queue | capacity
+ *
+ * Auth: callers should be in the channel's `admins` list. For v1 we check
+ * platform-level `isUserAllowed` as a proxy until ChannelConfig is fully wired.
+ * TODO: check ChannelConfig.admins once config loading is plumbed through.
+ */
+const handleAdmin: CommandHandler = async (ctx, args) => {
+  if (ctx.commandContext === 'first-message') {
+    return { handled: false };
+  }
+
+  // Require platform-level authorization as a proxy for admin access.
+  if (!ctx.client.isUserAllowed(ctx.username)) {
+    await ctx.client.createPost(
+      `⛔ ${ctx.formatter.formatBold('!admin')} requires admin access.`,
+      ctx.threadId,
+    );
+    return { handled: true };
+  }
+
+  const parts = (args ?? '').trim().split(/\s+/).filter(Boolean);
+  const sub = parts[0]?.toLowerCase();
+  const subArgs = parts.slice(1).join(' ');
+
+  const sessions = ctx.sessionManager.registry.getSessions() as Map<string, import('../session/types.js').Session>;
+
+  switch (sub) {
+    case 'sessions':
+      await handleAdminSessions(ctx.client, ctx.threadId, ctx.username, sessions);
+      break;
+
+    case 'kill':
+      if (!subArgs) {
+        await ctx.client.createPost(
+          `❌ Usage: ${ctx.formatter.formatCode('!admin kill <threadId>')}`,
+          ctx.threadId,
+        );
+      } else {
+        await handleAdminKill(ctx.client, ctx.threadId, subArgs, sessions);
+      }
+      break;
+
+    case 'queue':
+      await handleAdminQueue(ctx.client, ctx.threadId, ctx.username, globalQueue);
+      break;
+
+    case 'capacity':
+      await handleAdminCapacity(ctx.client, ctx.threadId, ctx.username, globalQueue);
+      break;
+
+    default:
+      await ctx.client.createPost(
+        `❌ Unknown subcommand ${ctx.formatter.formatCode(sub ?? '')}. Use: ${ctx.formatter.formatCode('sessions')}, ${ctx.formatter.formatCode('kill <threadId>')}, ${ctx.formatter.formatCode('queue')}, ${ctx.formatter.formatCode('capacity')}.`,
+        ctx.threadId,
+      );
+  }
+
+  return { handled: true };
+};
+
+/**
  * Create a passthrough handler for Claude Code slash commands.
  */
 function createPassthroughHandler(slashCommand: string): CommandHandler {
@@ -536,6 +610,7 @@ handlers.set('worktree', handleWorktree);
 handlers.set('bug', handleBug);
 handlers.set('plugin', handlePlugin);
 handlers.set('harness', handleHarness);
+handlers.set('admin', handleAdmin);
 
 // Passthrough commands
 handlers.set('context', createPassthroughHandler('context'));
