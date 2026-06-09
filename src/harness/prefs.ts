@@ -28,10 +28,3 @@ export function getUserHarnessPreference(platformId: string, userId: string): Ha
 export function setUserHarnessPreference(platformId: string, userId: string, harnessType: HarnessType): void {
   userHarnessPrefs.set(`${platformId}:${userId}`, harnessType);
 }
-
-/**
- * Clear a user's harness preference (revert to system default).
- */
-function clearUserHarnessPreference(platformId: string, userId: string): void {
-  userHarnessPrefs.delete(`${platformId}:${userId}`);
-}
