@@ -3,6 +3,7 @@
  */
 
 import type { AutoUpdateConfig, AutoRestartMode, ScheduledWindow } from '../auto-update/types.js';
+import type { HarnessType } from '../harness/adapter.js';
 
 // Re-export auto-update types for convenience
 export type { AutoUpdateConfig, AutoRestartMode, ScheduledWindow };
@@ -183,6 +184,32 @@ export interface ClaudeAccount {
   displayName?: string;
 }
 
+/**
+ * Per-channel configuration for Multi-User Channel Mode.
+ *
+ * When a platform channel is listed here the bot enforces per-user session
+ * ownership: each user gets their own private agent thread. Unauthorized users
+ * who reply in someone else's thread receive a polite notice.
+ */
+export interface ChannelConfig {
+  /** Slack/Mattermost channel ID (e.g. "C01234ABCDE"). */
+  id: string;
+  /** Human-readable name shown in logs and admin output (display only). */
+  name?: string;
+  /** Max concurrent sessions in this channel. Falls back to global `maxConcurrent`. */
+  maxConcurrent?: number;
+  /** Max simultaneous sessions per user in this channel. */
+  maxPerUser?: number;
+  /** Default harness for sessions started in this channel. */
+  defaultHarness?: HarnessType;
+  /** Default permission mode for sessions started in this channel. */
+  permissionMode?: PermissionMode;
+  /** How long (minutes) a queued request waits before timing out (default: 5). */
+  queueTimeoutMinutes?: number;
+  /** Slack/Mattermost user IDs with `!admin` access in this channel. */
+  admins?: string[];
+}
+
 export interface Config {
   version: number;
   workingDir: string;
@@ -204,6 +231,16 @@ export interface Config {
   stickyMessage?: StickyMessageCustomization; // Optional sticky message customization
   /** Optional Claude account pool. When omitted, bot runs in single-account mode. */
   claudeAccounts?: ClaudeAccount[];
+  /**
+   * Per-channel Multi-User Channel Mode configuration.
+   * When a channel is listed here the bot enforces per-user session ownership.
+   */
+  channels?: ChannelConfig[];
+  /**
+   * Global fallback for max concurrent sessions across all channels.
+   * Individual channels may override via `ChannelConfig.maxConcurrent`.
+   */
+  maxConcurrent?: number;
   platforms: PlatformInstanceConfig[];
 }
 

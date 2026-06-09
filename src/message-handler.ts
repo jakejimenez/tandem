@@ -18,6 +18,11 @@ import {
 } from './commands/index.js';
 import type { InitialSessionOptions } from './session/types.js';
 import { logSilentError } from './utils/error-handler/index.js';
+import {
+  registerSessionOwner,
+  getSessionOwner,
+  unregisterSession,
+} from './multiuser/index.js';
 
 /**
  * Logger interface for message handler
@@ -199,6 +204,24 @@ export async function handleMessage(
         return;
       }
 
+      // Multi-User Channel Mode: ownership check.
+      // If the thread has a registered owner and this user is not that owner,
+      // post a notice instead of forwarding the message to Claude.
+      // TODO: send 🙋 DM notification to the owner when a non-owner tries to reply.
+      {
+        const channelId = client.getMcpConfig?.().channelId;
+        if (channelId !== undefined) {
+          const owner = getSessionOwner(platformId, channelId, threadRoot);
+          if (owner !== undefined && owner !== username) {
+            await client.createPost(
+              `This session belongs to @${owner}. React with 🙋 to request access.`,
+              threadRoot,
+            );
+            return;
+          }
+        }
+      }
+
       // Get any attached files (images)
       const files = post.metadata?.files;
 
@@ -274,6 +297,25 @@ export async function handleMessage(
 
     let prompt = client.extractPrompt(message);
     const files = post.metadata?.files;
+
+    // @tandem sessions — list the requesting user's active sessions.
+    if (prompt.trim().toLowerCase() === 'sessions') {
+      const userSessions = [...session.registry.getAll()].filter(
+        s => s.startedBy === username,
+      );
+      if (userSessions.length === 0) {
+        await client.createPost(`You have no active sessions.`, threadRoot);
+      } else {
+        const fmt = formatter;
+        const lines = [`${fmt.formatBold('Your active sessions')} (${userSessions.length}):\n`];
+        for (const s of userSessions) {
+          const age = Math.round((Date.now() - s.startedAt.getTime()) / 60_000);
+          lines.push(`• thread ${fmt.formatCode(s.threadId.slice(0, 12))}  state=${s.lifecycle.state}  age=${age}m`);
+        }
+        await client.createPost(lines.join('\n'), threadRoot);
+      }
+      return;
+    }
 
     if (!prompt && !files?.length) {
       await client.createPost(`Mention me with your request`, threadRoot);
@@ -374,6 +416,8 @@ export async function handleMessage(
         post.id,  // triggeringPostId
         initialOptions
       );
+      // Register ownership for Multi-User Channel Mode.
+      registerSessionOwner(platformId, client.getMcpConfig().channelId, threadRoot, username);
       return;
     }
 
@@ -386,6 +430,8 @@ export async function handleMessage(
       post.id,  // triggeringPostId - the actual message that started the session
       initialOptions
     );
+    // Register ownership for Multi-User Channel Mode.
+    registerSessionOwner(platformId, client.getMcpConfig().channelId, threadRoot, username);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     logger?.error(`Error handling message: ${errorMessage}`);

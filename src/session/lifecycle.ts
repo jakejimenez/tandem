@@ -54,6 +54,7 @@ import {
   postSkippedFilesFeedback,
 } from '../operations/streaming/handler.js';
 import { detectWorktreeInfo } from '../git/worktree.js';
+import { unregisterSession as unregisterSessionOwner } from '../multiuser/index.js';
 
 const log = createLogger('lifecycle');
 const sessionLog = createSessionLog(log);
@@ -1821,6 +1822,14 @@ export async function handleExit(
     ctx.ops.unregisterWorktreeUser(session.worktreeInfo.worktreePath, session.sessionId);
   }
 
+  // Unregister Multi-User Channel Mode ownership for this session.
+  {
+    const channelId = session.platform.getMcpConfig?.().channelId;
+    if (channelId !== undefined) {
+      unregisterSessionOwner(session.platformId, channelId, session.threadId);
+    }
+  }
+
   // Clean up session from maps and notify keep-alive
   removeFromRegistry(session, ctx);
 
@@ -1864,6 +1873,14 @@ export async function killSession(
   // Worktrees are preserved for potential reuse - cleanup via !worktree cleanup or orphan cleanup
   if (unpersist && session.worktreeInfo) {
     ctx.ops.unregisterWorktreeUser(session.worktreeInfo.worktreePath, session.sessionId);
+  }
+
+  // Unregister Multi-User Channel Mode ownership for this session.
+  {
+    const channelId = session.platform.getMcpConfig?.().channelId;
+    if (channelId !== undefined) {
+      unregisterSessionOwner(session.platformId, channelId, session.threadId);
+    }
   }
 
   // Clean up session from maps and notify keep-alive
