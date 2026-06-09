@@ -21,7 +21,6 @@ import { logSilentError } from './utils/error-handler/index.js';
 import {
   registerSessionOwner,
   getSessionOwner,
-  unregisterSession,
 } from './multiuser/index.js';
 
 /**

@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'bun:test';
 import { resolvePermissionAction, type PermissionContext } from './engine.js';
-import type { Capabilities } from '../harness/adapter.js';
 
 const createContext = (overrides?: Partial<PermissionContext>): PermissionContext => ({
   capabilities: {

@@ -19,7 +19,6 @@ import { clearAllTimers } from './timer-manager.js';
 import { isAuthorizedForSession } from './authorization.js';
 import type { PlatformClient, PlatformFile } from '../platform/index.js';
 import type { ClaudeCliOptions, ClaudeEvent, RateLimitHit } from '../claude/cli.js';
-import { ClaudeCli } from '../claude/cli.js';
 import { createHarness } from '../harness/registry.js';
 import { getUserHarnessPreference } from '../harness/prefs.js';
 import type { HarnessType } from '../harness/adapter.js';

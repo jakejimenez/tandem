@@ -458,7 +458,6 @@ export class OpenCodeCli extends EventEmitter {
     const sseUrl = `${this.serverUrl}/event`;
     log.debug(`Subscribing to SSE at ${sseUrl}`);
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       try {
         const res = await fetch(sseUrl, {

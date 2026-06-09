@@ -2,7 +2,7 @@
  * Unit tests for the session ownership registry (multiuser/channel.ts).
  */
 
-import { describe, test, expect, beforeEach } from 'bun:test';
+import { describe, test, expect } from 'bun:test';
 import {
   registerSessionOwner,
   getSessionOwner,
