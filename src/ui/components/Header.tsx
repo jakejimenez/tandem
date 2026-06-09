@@ -20,7 +20,7 @@ export function Header({ version, workingDir, claudeVersion }: HeaderProps) {
       paddingX={1}
       flexDirection="column"
     >
-      {/* Line 1: Logo + name + version */}
+      {/* Line 1: T top bar + name + version */}
       <Text>
         <Text color="yellow"> ✴ </Text>
         <Text bold color="blue">█████</Text>
@@ -28,18 +28,20 @@ export function Header({ version, workingDir, claudeVersion }: HeaderProps) {
         <Text bold>  tandem</Text>
         <Text dimColor> v{version}</Text>
       </Text>
-      {/* Line 2: Logo + tagline */}
+      {/* Line 2: T stem + tagline */}
       <Text>
-        <Text color="yellow">✴   </Text>
+        <Text color="yellow"> ✴ </Text>
         <Text bold color="blue">  █  </Text>
-        <Text color="yellow">  ✴ </Text>
+        <Text color="yellow"> ✴ </Text>
+        <Text>  </Text>
         <Text dimColor>Chat × Claude Code</Text>
       </Text>
-      {/* Line 3: Logo + workdir + Claude version */}
+      {/* Line 3: T stem + workdir + Claude version */}
       <Text>
-        <Text color="yellow"> ✴  </Text>
+        <Text color="yellow"> ✴ </Text>
         <Text bold color="blue">  █  </Text>
-        <Text color="yellow"> ✴  </Text>
+        <Text color="yellow"> ✴ </Text>
+        <Text>  </Text>
         <Text color="cyan">{workingDir}</Text>
         <Text dimColor> | Claude {claudeVersion}</Text>
       </Text>
