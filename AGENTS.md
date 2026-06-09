@@ -105,4 +105,3 @@ Commands prefixed with `!admin` are restricted to the configured admin user list
 
 ## Attribution
 
-Tandem is a fork of [anneschuth/claude-threads](https://github.com/anneschuth/claude-threads) (Apache-2.0).

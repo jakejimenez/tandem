@@ -1,5 +1,4 @@
 {
-  "_attribution": "Forked from anneschuth/claude-threads (Apache-2.0): https://github.com/anneschuth/claude-threads",
   "name": "tandem",
   "version": "1.17.0",
   "description": "Screen-sharing for AI pair programming, but everyone can type. Supports Claude Code, OpenCode, Pi, and Codex.",

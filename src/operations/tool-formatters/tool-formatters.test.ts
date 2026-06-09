@@ -930,7 +930,7 @@ describe('Utility Functions', () => {
 
     it('shortens long worktree paths from ~/.local/share/tandem/worktrees/', () => {
       // This tests the actual format of worktree directories created by tandem
-      const worktreePath = '/Users/anneschuth/.local/share/tandem/worktrees/Users-anneschuth-claude-threads--refactor-platform-abstraction-layer-c7287c11';
+      const worktreePath = '/Users/testuser/.local/share/tandem/worktrees/Users-testuser-myproject--refactor-platform-abstraction-layer-c7287c11';
       const filePath = `${worktreePath}/src/operations/tool-formatters/file.ts`;
 
       const result = shortenPath(filePath, undefined, {
@@ -942,7 +942,7 @@ describe('Utility Functions', () => {
     });
 
     it('shortens exact worktree path match', () => {
-      const worktreePath = '/Users/anneschuth/.local/share/tandem/worktrees/Users-anneschuth-claude-threads--branch-abc12345';
+      const worktreePath = '/Users/testuser/.local/share/tandem/worktrees/Users-testuser-myproject--branch-abc12345';
 
       const result = shortenPath(worktreePath, undefined, {
         path: worktreePath,

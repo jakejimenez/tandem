@@ -647,10 +647,10 @@ Claude Code stores all conversation history on disk, which is invaluable for deb
 tail -20 ~/.claude/history.jsonl | jq -r '.cwd + " " + .name'
 
 # Find sessions for this project
-ls ~/.claude/projects/-Users-anneschuth-mattermost-claude-code/
+ls ~/.claude/projects/-Users-yourname-myproject/
 
 # View a specific session's conversation
-cat ~/.claude/projects/-Users-anneschuth-mattermost-claude-code/SESSION_ID.jsonl | jq .
+cat ~/.claude/projects/-Users-yourname-myproject/SESSION_ID.jsonl | jq .
 ```
 
 **Key points:**

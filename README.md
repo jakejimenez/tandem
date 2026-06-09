@@ -192,4 +192,3 @@ The bot checks for updates automatically and notifies you when a new version is 
 
 Apache-2.0 — see [LICENSE](LICENSE).
 
-Built on [claude-threads](https://github.com/anneschuth/claude-threads) by Anne Schuth (Apache-2.0).
